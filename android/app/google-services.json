@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "470593170402",
+    "project_id": "qsales-64924",
+    "storage_bucket": "qsales-64924.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470593170402:android:96b41edcb6cbd586c7a7bb",
+        "android_client_info": {
+          "package_name": "com.qsales"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPq8qBH0W9_NO46tF7dRxGiM6Pbz4L0H4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

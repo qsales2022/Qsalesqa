@@ -1,0 +1,32 @@
+const images = {
+  splash_logo: require("./SplashLogo1.png"),
+  Welcome_1: require("./Welcome_1.png"),
+  Welcome_2: require("./Welcome_2.png"),
+  HeaderIcon: require("./HeaderIcon.png"),
+  swiperImage: require("./swiperImage.png"),
+  ExpressDel: require("./ExpressDel.png"),
+  Cleaning: require("./Cleaning.png"),
+  CookingAppliances: require("./CookingAppliences.png"),
+  HomeCare: require("./HomeCare.png"),
+  StorageRacks: require("./StorageRacks.png"),
+  BeautynFitness: require("./BeautynFitness.png"),
+  AllCategories: require("./AllCategories.png"),
+  HomeOrganisation: require("./HomeOrganisation.png"),
+  KitchenImprovement: require("./KitchenImprovement.png"),
+  FeatureTick: require("./FeatureTick.png"),
+  image_4: require("./image_4.png"),
+  image_1: require("./image_1.png"),
+  image_2: require("./image_2.png"),
+  image_3: require("./image_3.png"),
+  PriceTag: require("./PriceTag.png"),
+  arrowDown: require("./arrowDown.png"),
+  whatsapp: require("./whatsapp.png"),
+  helpMale: require("./help_male.png"),
+  helpFemale: require("./help_female.png"),
+  share2: require("./share2.png"),
+  share1: require("./share1.png"),
+  share: require("./Share.png"),
+  share3: require("./Share3.png")
+};
+
+export default images;

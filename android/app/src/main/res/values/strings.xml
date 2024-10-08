@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Qsales</string>
+    <string name="facebook_app_id">1282934382523657</string>
+    <string name="facebook_client_token">cdfc1be82fe6ecd4889c3ab2c91c9d43e4ab4f0e7638d190ae1169b008981444</string>
 </resources>
