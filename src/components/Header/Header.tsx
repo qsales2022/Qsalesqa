@@ -4,17 +4,17 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { FC, useEffect, useState } from "react";
-import { getHeight, getWidth } from "../../Theme/Constants";
-import CommonStyles from "../../Theme/CommonStyles";
-import SvgIcon from "../../assets/SvgIcon";
-import Colors from "../../Theme/Colors";
-import { ParamListBase, useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Translation from "../../assets/i18n/Translation";
-import screens from "../../Navigation/screens";
-import { useTranslation } from "react-i18next";
+} from 'react-native';
+import React, {FC, useEffect, useState} from 'react';
+import {getHeight, getWidth} from '../../Theme/Constants';
+import CommonStyles from '../../Theme/CommonStyles';
+import SvgIcon from '../../assets/SvgIcon';
+import Colors from '../../Theme/Colors';
+import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import Translation from '../../assets/i18n/Translation';
+import screens from '../../Navigation/screens';
+import {useTranslation} from 'react-i18next';
 interface HeaderInterface {
   title?: string;
   cartCount?: number;
@@ -27,31 +27,49 @@ interface HeaderInterface {
   pageNavigation?: string;
 }
 const Header: FC<HeaderInterface> = ({
-  title = "",
+  title = '',
   cartCount = 0,
   onSearch,
   searchValue,
   onCloseSearch,
   hideSearch,
   hideCart,
-  page = "",
-  pageNavigation = "",
+  page = '',
+  pageNavigation = '',
 }) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [isSearch, setIsSearch] = useState(false);
-  console.log(page, "this page");
 
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   return hideSearch ? (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() =>
-          page == "details" && pageNavigation === ""
-            ? navigation.push("MAIN")
-            : navigation.goBack()
-        }
-        style={[CommonStyles.containerFlex1, CommonStyles.centerContainer]}
-      >
+        onPress={() => {
+          try {
+            console.log(
+              'pageNavigation:',
+              (page === 'details' && pageNavigation === '') || page === 'list',
+            ); // Log page navigation
+
+            if (
+              (page === 'details' && pageNavigation === '') ||
+              page === 'list'
+            ) {
+              console.log('Navigating to MAIN');
+              navigation.push('MAIN'); 
+            } else {
+              console.log('Going back');
+              if (navigation.canGoBack()) {
+                navigation.goBack(); // Only go back if it's possible
+              } else {
+                console.warn('No screens to go back to.');
+              }
+            }
+          } catch (error) {
+            console.error('Error in navigation:', error); // Log any errors
+          }
+        }}
+        style={[CommonStyles.containerFlex1, CommonStyles.centerContainer]}>
         <SvgIcon.BackArrow
           width={getWidth(12)}
           height={getWidth(12)}
@@ -71,8 +89,7 @@ const Header: FC<HeaderInterface> = ({
       </View>
       {!hideCart && (
         <View
-          style={[CommonStyles.containerFlex1, CommonStyles.centerContainer]}
-        >
+          style={[CommonStyles.containerFlex1, CommonStyles.centerContainer]}>
           <TouchableOpacity onPress={() => navigation.navigate(screens.cart)}>
             <View style={styles.container2}>
               <SvgIcon.CartIcon width={getHeight(28)} height={getHeight(28)} />
@@ -90,8 +107,7 @@ const Header: FC<HeaderInterface> = ({
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
-        style={[CommonStyles.containerFlex1, CommonStyles.centerContainer]}
-      >
+        style={[CommonStyles.containerFlex1, CommonStyles.centerContainer]}>
         <SvgIcon.BackArrow
           width={getWidth(12)}
           height={getWidth(12)}
@@ -115,35 +131,33 @@ const Header: FC<HeaderInterface> = ({
         <View
           style={{
             flex: 6,
-            flexDirection: "row",
+            flexDirection: 'row',
             backgroundColor: Colors.borderGray,
 
-            alignSelf: "center",
+            alignSelf: 'center',
             borderRadius: 18,
-            justifyContent: "center",
-          }}
-        >
-          <View style={{ alignSelf: "center", padding: 6 }}>
+            justifyContent: 'center',
+          }}>
+          <View style={{alignSelf: 'center', padding: 6}}>
             <SvgIcon.SearchIcon height={getHeight(35)} />
           </View>
 
           <TextInput
-            style={{ flex: 1, color: Colors.black }}
-            placeholderTextColor={"grey"}
-            placeholder={`${t("search")}`}
-            onChangeText={(text) => {
+            style={{flex: 1, color: Colors.black}}
+            placeholderTextColor={'grey'}
+            placeholder={`${t('search')}`}
+            onChangeText={text => {
               onSearch(text);
             }}
             value={searchValue}
           />
 
           <TouchableOpacity
-            style={{ alignSelf: "center", padding: 6 }}
+            style={{alignSelf: 'center', padding: 6}}
             onPress={() => {
               setIsSearch(false);
               onCloseSearch();
-            }}
-          >
+            }}>
             <SvgIcon.CloseIcon height={getHeight(35)} />
           </TouchableOpacity>
         </View>
@@ -152,16 +166,14 @@ const Header: FC<HeaderInterface> = ({
       {!isSearch && (
         <TouchableOpacity onPress={() => setIsSearch(true)}>
           <View
-            style={[CommonStyles.containerFlex1, CommonStyles.centerContainer]}
-          >
+            style={[CommonStyles.containerFlex1, CommonStyles.centerContainer]}>
             <SvgIcon.SearchIcon height={getHeight(35)} />
           </View>
         </TouchableOpacity>
       )}
       {!hideCart && (
         <View
-          style={[CommonStyles.containerFlex1, CommonStyles.centerContainer]}
-        >
+          style={[CommonStyles.containerFlex1, CommonStyles.centerContainer]}>
           <TouchableOpacity onPress={() => navigation.navigate(screens.cart)}>
             <View style={styles.container2}>
               <SvgIcon.CartIcon width={getHeight(28)} height={getHeight(28)} />
@@ -183,43 +195,43 @@ export default Header;
 const styles = StyleSheet.create({
   container: {
     height: getHeight(15),
-    backgroundColor: "white",
-    flexDirection: "row",
+    backgroundColor: 'white',
+    flexDirection: 'row',
     paddingLeft: 5,
     paddingRight: 5,
-    justifyContent: "center",
-    top: "2%",
+    justifyContent: 'center',
+    top: '2%',
   },
   container2: {
-    position: "relative",
+    position: 'relative',
   },
   badge: {
-    position: "absolute",
+    position: 'absolute',
     top: -2,
     right: -2,
-    backgroundColor: "black",
+    backgroundColor: 'black',
     borderRadius: 7,
     width: 14,
     height: 14,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   badgeText: {
-    color: "white",
-    fontWeight: "bold",
+    color: 'white',
+    fontWeight: 'bold',
     fontSize: 9,
   },
   titleContainer: {
     flex: 5,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     // backgroundColor:'red'
   },
   title: {
     fontSize: getHeight(45),
-    fontWeight: "500",
+    fontWeight: '500',
     marginRight: getHeight(95),
     color: Colors.black,
-    maxWidth: "90%",
+    maxWidth: '90%',
   },
 });

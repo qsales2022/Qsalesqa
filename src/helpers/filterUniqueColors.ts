@@ -15,11 +15,9 @@ const filterUniqueColors = (productArray: any) => {
         if (!colorMap.has(colorValue)) {
           colorMap.set(colorValue, []);
         }
-
         colorMap.get(colorValue).push(item);
       }
     });
-
     // Filter the objects with the same color
     const resultArray: any = [];
     console.log(colorMap, "COLOR_MAP");
@@ -27,14 +25,12 @@ const filterUniqueColors = (productArray: any) => {
       if (items.length >= 1) {
         // If you want only arrays with more than one object with the same color
         // resultArray.push(...items);
-
         // If you want to include only the first item with the same color
         resultArray.push(items[0]);
       }
     });
-    console.log(resultArray, "NEW_FILTER_KATHOLANE====");
+    console.log(resultArray, "COLOR_MAP_11====");
     return resultArray;
   }
 };
-
 export default filterUniqueColors;

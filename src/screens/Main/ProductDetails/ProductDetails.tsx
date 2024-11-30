@@ -68,6 +68,7 @@ import {VELOCITY_EPS} from 'react-native-reanimated/lib/typescript/reanimated2/a
 import AnimatedLottieView from 'lottie-react-native';
 import Animations from '../../../assets/Animations';
 import Translation from '../../../assets/i18n/Translation';
+import {Dropdown} from 'react-native-element-dropdown';
 import strings from '../../../assets/i18n/strings';
 const ProductDetails = ({route, navigation}: any) => {
   const tabRef = useRef<any>();
@@ -117,7 +118,19 @@ const ProductDetails = ({route, navigation}: any) => {
   const [handleId, setHandleId] = useState<string>('');
   const {relatedProducts, getRelatedProducts}: any = useGetRelatedProducts();
   const [isPlaying, setIsPlaying] = useState(true);
-
+  const [value, setValue] = useState(null);
+  const [isFocus, setIsFocus] = useState(false);
+  const data = [
+    { label: 'Item 1', value: '1' },
+    { label: 'Item 2', value: '2' },
+    { label: 'Item 3', value: '3' },
+    { label: 'Item 4', value: '4' },
+    { label: 'Item 5', value: '5' },
+    { label: 'Item 6', value: '6' },
+    { label: 'Item 7', value: '7' },
+    { label: 'Item 8', value: '8' },
+  ];
+  let mode = 'test';
   const handleMessage = (event: WebViewMessageEvent) => {
     if (event.nativeEvent.data) {
       const contentHeight = parseInt(event.nativeEvent.data);
@@ -175,7 +188,6 @@ const ProductDetails = ({route, navigation}: any) => {
         selected: true,
       });
       let arr = frequentlyBroughtItem?.preferences[0]?.products;
-      console.log('frequentlyBroughtItem', JSON.stringify(arr));
 
       arr.forEach((element: any) => {
         freqItems_.push({
@@ -229,9 +241,7 @@ const ProductDetails = ({route, navigation}: any) => {
     // console.log(productDetails?.metafields, "productDetailscheecking");
     if (productDetails) {
       if (productDetails.id) {
-        if (productDetails?.metafields) {
-          console.log(productDetails?.metafields, 'productDetails?.metafields');
-
+        if (productDetails?.metafields) {          
           setAddOnList(productDetails?.metafields);
         }
         getDeals(getNoFromId(productDetails?.id));
@@ -390,8 +400,8 @@ const ProductDetails = ({route, navigation}: any) => {
   };
 
   const addToCartWithAddOn = async () => {
-    console.log('YES');
-
+   console.log('i am cheking');
+   
     var lineItems = `{variantId: "gid://shopify/ProductVariant/${getNoFromId(
       variant?.node?.id,
     )}" quantity: ${quantity}}`;
@@ -473,10 +483,10 @@ const ProductDetails = ({route, navigation}: any) => {
     await setFreqItemVariantModalOpen(true);
   };
   useEffect(() => {
-    console.log('YOUO', JSON.stringify(variantList));
-    console.log('IWNSN', JSON.stringify(productHasVariantSize(variantList)));
-
+    // console.log('YOUO', JSON.stringify(variantList));
+    // console.log('IWNSN', JSON.stringify(productHasVariantSize(variantList)));
     const colorList = filterUniqueColors(variantList);
+
     const sizeList = filterUniqueSize(variantList);
     setVariantShow(
       productHasVariantSize(variantList) ? colorList : variantList,
@@ -509,7 +519,6 @@ const ProductDetails = ({route, navigation}: any) => {
     );
     setSelectedVariant(variantIndex);
   };
-  console.log(productDetails?.descriptionHtml, 'productDetailscheecking');
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -528,6 +537,9 @@ const ProductDetails = ({route, navigation}: any) => {
     bottomSheetModalRef.current?.dismiss();
   };
 
+  useEffect(() => {
+    console.log(variantToShow, 'this is naseeb');
+  }, [variantToShow]);
   return (
     <BottomSheetModalProvider>
       <View
@@ -648,15 +660,42 @@ const ProductDetails = ({route, navigation}: any) => {
                       </>
                     ))}
                   </View>
-                  {variantList && variantList.length > 1 && (
+                  {/* {variantList && variantList.length > 1 && mode === 'test' ? (
+                    <Dropdown
+                      style={[
+                        styles.dropdown,
+                        isFocus && {borderColor: 'blue'},
+                      ]}
+                      placeholderStyle={styles.placeholderStyle}
+                      inputSearchStyle={styles.inputSearchStyle}
+                      iconStyle={styles.iconStyle}
+                      data={data}
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      // placeholder={!isFocus ? 'Select item' : '...'}
+                      // value={value}
+                      onFocus={() => setIsFocus(true)}
+                      onBlur={() => setIsFocus(false)}
+                      onChange={(item:any) => {
+                        setValue(item.value);
+                        setIsFocus(false);
+                      }}
+                      renderLeftIcon={() => (
+                        <View>
+                          <Text>naseeb</Text>
+                        </View>
+                      )}
+                    />
+                  ) : (
                     <FlatList
-                      horizontal
                       data={variantToShow}
                       renderItem={({item, index}) => {
                         let color = item?.node?.selectedOptions.find(
                           (variantOptions: any) =>
                             variantOptions.name === 'Color',
                         )?.value;
+
                         let selectedColor = variant?.node?.selectedOptions.find(
                           (variantOptions: any) =>
                             variantOptions.name === 'Color',
@@ -699,6 +738,61 @@ const ProductDetails = ({route, navigation}: any) => {
                         );
                       }}
                     />
+                  )} */}
+                  {variantList && variantList.length > 1  && (
+                   
+                   <FlatList
+                   horizontal
+                   data={variantToShow}
+                   renderItem={({item, index}) => {
+                     let color = item?.node?.selectedOptions.find(
+                       (variantOptions: any) =>
+                         variantOptions.name === 'Color',
+                     )?.value;
+
+                     let selectedColor = variant?.node?.selectedOptions.find(
+                       (variantOptions: any) =>
+                         variantOptions.name === 'Color',
+                     )?.value;
+                     return (
+                       <TouchableOpacity
+                         key={index}
+                         onPress={() =>
+                           productHasVariantSize(variantList)
+                             ? selectVariantItem({
+                                 name: 'Color',
+                                 value: color,
+                                 selected: variant,
+                               })
+                             : setSelectedVariant(index)
+                         }>
+                         <View
+                           style={{
+                             borderWidth:
+                               (!productHasVariantSize(variantList) &&
+                                 item?.node?.title ==
+                                   variant?.node?.title) ||
+                               color == selectedColor
+                                 ? 2
+                                 : 0,
+                             borderColor: Colors.primary,
+                             margin: getWidth(50),
+                             opacity:
+                               item?.node?.quantityAvailable > 0 ? 1 : 0.5,
+                           }}>
+                           <Image
+                             resizeMode="stretch"
+                             style={styles.varientImage}
+                             source={{
+                               uri: item?.node?.image?.url,
+                             }}
+                           />
+                         </View>
+                       </TouchableOpacity>
+                     );
+                   }}
+                 />
+                    
                   )}
                   {variantList &&
                     variantList.length > 1 &&
@@ -719,7 +813,8 @@ const ProductDetails = ({route, navigation}: any) => {
                                       styles.variantTitle,
                                       {fontWeight: '500'},
                                     ]}>
-                                    {item?.name != 'Title' ? item?.name : ''}{' '}
+                                    {item?.name != 'Title' ? item?.name : ''}
+                                    {''}
                                   </Text>
                                   <Text
                                     style={[
@@ -801,19 +896,23 @@ const ProductDetails = ({route, navigation}: any) => {
                       }}>
                       {formatPrice(Number(variant?.node?.price?.amount))}{' '}
                     </Text>
-                    {
-                     !Number.isNaN(Number(variant?.node?.compareAtPrice?.amount)) && 
+                    {!Number.isNaN(
+                      Number(variant?.node?.compareAtPrice?.amount),
+                    ) && (
                       <Text
-                      style={{
-                        fontWeight: "600",
-                        paddingLeft: 99,
-                        fontSize: 14,
-                        color:'black',
-                        textDecorationLine: 'line-through',
-                      }}
-                    > 
-                      QAR {formatPrice(Number(variant?.node?.compareAtPrice?.amount))}{" "}
-                    </Text>}
+                        style={{
+                          fontWeight: '600',
+                          paddingLeft: 99,
+                          fontSize: 14,
+                          color: 'black',
+                          textDecorationLine: 'line-through',
+                        }}>
+                        QAR{' '}
+                        {formatPrice(
+                          Number(variant?.node?.compareAtPrice?.amount),
+                        )}{' '}
+                      </Text>
+                    )}
                   </Text>
 
                   <View style={styles.rowContainer}>
@@ -2074,5 +2173,42 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     // backgroundColor: "red",
+  },
+  // container: {
+  //   backgroundColor: 'white',
+  //   padding: 16,
+  // },
+  dropdown: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  label: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
   },
 });

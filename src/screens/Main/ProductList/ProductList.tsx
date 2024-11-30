@@ -24,7 +24,7 @@ import BottomSheetSort, {
 } from "../../../components/BottomSheet/BottomSheetSort";
 
 const ProductList = ({ route, navigation }: any) => {
-  const { title = "", category = "" } = route?.params || {};
+  const { title = "", category = ""} = route?.params || {};
   const [search, setSearch] = useState<any>("");
   const { products } = useGetProducts(category, 200, "");
   const [productsData, setProducts] = useState<any>([]);
@@ -107,7 +107,9 @@ const ProductList = ({ route, navigation }: any) => {
         cartCount={count}
         onSearch={(text: any) => setSearch(text)}
         searchValue={search}
+        hideSearch={true}
         onCloseSearch={() => setSearch("")}
+        page="list"
       />
       <BannerStrip />
       <FlatList

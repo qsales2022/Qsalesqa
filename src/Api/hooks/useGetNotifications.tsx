@@ -26,8 +26,7 @@ const useGetNotifications = () => {
           },
         }).get("notifications")
         const { data } = response;
-        console.log('NOTIFICATION ', JSON.stringify(data));
-        
+        console.log('NOTIFICATION', JSON.stringify(data));
         setData(data?.data);
         setLoading(false);
         dispatch(toggleLoader(false));

@@ -12,13 +12,12 @@ import Colors from "./src/Theme/Colors";
 import messaging from '@react-native-firebase/messaging';
 import firebase from '@react-native-firebase/app';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import screens from "./src/Navigation/screens";
 
 
 
 
-const App = () => {
-
-
+const App = ({navigation}:any) => {
   const toastConfig: ToastConfig = {
     success: ({ text1, text2, ...rest }) => (
       <TouchableOpacity

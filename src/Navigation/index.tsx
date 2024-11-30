@@ -1,7 +1,7 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Cart, Home, LogoSplash, ProductDetails } from "../screens";
+import { Cart, Home, LogoSplash, ProductDetails, ProductList } from "../screens";
 import OnBoardingNavigation from "./OnBoarding";
 import MainNavigation from "./MainNavigation";
 import Test from "../components/TestUI/Test";
@@ -43,9 +43,11 @@ const Navigation = () => {
               path: "HOME_TABS",
               screens: {
                 HOME: "HOME",
+
               },
             },
             PRODUCT_DETAILS: "PRODUCT_DETAILS/:handle",
+            PRODUCT_LIST:"PRODUCT_LIST/:title/:category"
           },
         },
       },
@@ -65,9 +67,9 @@ const Navigation = () => {
         <Stack.Screen name="SPLASH" component={LogoSplash} />
         <Stack.Screen name="ON_BOARDING" component={OnBoardingNavigation} />
         <Stack.Screen name="MAIN" component={MainNavigation} />
+
         <Stack.Screen name="Cheking" component={Test} />
         <Stack.Screen name="CART" component={Cart} />
-        
       </Stack.Navigator>
     </NavigationContainer>
   );
