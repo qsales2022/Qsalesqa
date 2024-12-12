@@ -1,6 +1,6 @@
 {
   "name": "Qsales",
-  "version": "4.3.2",
+  "version": "4.3.3",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.6.3",
+    "@likashefqet/react-native-image-zoom": "^4.2.1",
     "@native-html/iframe-plugin": "^2.6.1",
     "@ptomasroos/react-native-multi-slider": "^2.2.2",
     "@react-native-async-storage/async-storage": "^2.0.0",

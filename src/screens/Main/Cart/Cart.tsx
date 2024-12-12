@@ -27,12 +27,19 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {useTranslation} from 'react-i18next';
 import {formatPrice} from '../../../Utils';
 import CartSeklton from './CartSeklton';
+import useChekoutUrl from '../../../Api/hooks/useChekoutUrl';
+import {ActivityIndicator} from 'react-native';
+import {tokenSlice} from '../../../redux/reducers/TokenReducer';
 
 const Cart = ({navigation}: any) => {
   const {cartDetails, getCartData, loading}: any = useGetCart();
   const [checkoutId, setCheckoutId] = useState<any>('');
   const isFocused = useIsFocused();
   const {checkout, checkoutWithShipping}: any = useCheckout();
+  const {checkoutUrl, createChekout}: any = useChekoutUrl();
+  const [checkLoading, setCheckLoading] = useState<boolean>(false);
+  const [totalDiscount, setTotalDiscount] = useState(0);
+
   const dispatch = useDispatch();
   const {t} = useTranslation();
 
@@ -52,7 +59,21 @@ const Cart = ({navigation}: any) => {
   }, []);
 
   useEffect(() => {
-    console.log('cartDetails: ', cartDetails?.node?.lineItems?.edges.length);
+    const calculateTotalDiscount = (lines: any) => {
+      return lines?.reduce((acc: any, line: any) => {
+        const lineDiscount = line?.node?.discountAllocations?.reduce(
+          (sum: any, allocation: any) =>
+            sum + parseFloat(allocation?.discountedAmount?.amount),
+          0,
+        );
+        return acc + lineDiscount;
+      }, 0);
+    };
+
+    const discount = calculateTotalDiscount(cartDetails?.cart?.lines?.edges);
+
+    // Update state with the calculated discount
+    setTotalDiscount(discount);
   }, [cartDetails]);
 
   //check checkoutId present in local storage
@@ -64,227 +85,242 @@ const Cart = ({navigation}: any) => {
   }, [isFocused]);
 
   const next = () => {
+    setCheckLoading(true);
     checkoutWithShipping('', '', '', '', '', '');
   };
 
   useEffect(() => {
+    const handleCheckout = async () => {
+      if (!checkoutId) return;
+      // Ensure checkoutId is available
+      if (checkout) {
+        const url = await createChekout(checkoutId);
+        if (url) {
+          setCheckLoading(false);
+          navigation.navigate(screens.payment, {url});
+        } else {
+        }
+      }
+    };
 
-    if (checkout) {
-      const dataToPass = {
-        url: checkout?.checkoutShippingAddressUpdateV2?.checkout?.webUrl,
-      };
-      navigation.navigate(screens.payment, dataToPass);
-    }
-
+    handleCheckout();
   }, [checkout]);
   return (
-    <View
-      style={[CommonStyles.containerFlex1, {backgroundColor: Colors.white}]}>
-      <View style={styles.container}>
-        <View
-          style={[
-            CommonStyles.flexRowContainer,
-            {marginTop: getHeight(80), marginBottom: getHeight(80)},
-          ]}>
-          <Text
-            style={{
-              color: Colors.black,
-              fontSize: getHeight(35),
-              marginRight: 10,
-              alignSelf: 'center',
-              marginLeft: 16,
-            }}>
-            {t('cart')}
-          </Text>
-
+    <>
+      <View
+        style={[CommonStyles.containerFlex1, {backgroundColor: Colors.white}]}>
+        <View style={styles.container}>
           <View
-            style={{
-              backgroundColor: Colors.primary,
-              borderRadius: 100,
-              height: getHeight(35),
-              minWidth: getHeight(25),
-              justifyContent: 'center',
-              alignItems: 'center',
-              alignSelf: 'center',
-            }}>
-            <Text style={styles.badgeText}>
-              {cartDetails?.node?.lineItems?.edges.length}
+            style={[
+              CommonStyles.flexRowContainer,
+              {marginTop: getHeight(80), marginBottom: getHeight(80)},
+            ]}>
+            <Text
+              style={{
+                color: Colors.black,
+                fontSize: getHeight(35),
+                marginRight: 10,
+                alignSelf: 'center',
+                marginLeft: 16,
+              }}>
+              {t('cart')}
             </Text>
+
+            <View
+              style={{
+                backgroundColor: Colors.primary,
+                borderRadius: 100,
+                height: getHeight(35),
+                minWidth: getHeight(25),
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignSelf: 'center',
+              }}>
+              <Text style={styles.badgeText}>
+                {cartDetails?.cart?.lines?.edges?.length}
+              </Text>
+            </View>
           </View>
-        </View>
-        {!loading ? (
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={cartDetails?.node?.lineItems?.edges}
-            renderItem={({item, index}: any) => {
-              return (
-                <CartItem
-                  key={index}
-                  product={item?.node}
-                  checkoutId={checkoutId}
-                  updateCallBack={() => {
-                    getCartData();
-                  }}
-                  removedCallBack={() => {
-                    Toast.show({
-                      type: 'success',
-                      text1: `${t('cartItemRemoved')}`,
-                      position: 'bottom',
-                    });
-                    getCartData();
-                  }}
-                />
-              );
-            }}
-            ListEmptyComponent={() => {
-              return (
-                <View
-                  style={{height: getHeight(1.2), justifyContent: 'center'}}>
+          {!loading ? (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={cartDetails?.cart?.lines?.edges}
+              renderItem={({item, index}: any) => {
+                return (
+                  <CartItem
+                    key={index}
+                    product={item?.node}
+                    checkoutId={checkoutId}
+                    updateCallBack={() => {
+                      getCartData();
+                    }}
+                    removedCallBack={() => {
+                      Toast.show({
+                        type: 'success',
+                        text1: `${t('cartItemRemoved')}`,
+                        position: 'bottom',
+                      });
+                      getCartData();
+                    }}
+                  />
+                );
+              }}
+              ListEmptyComponent={() => {
+                return (
                   <View
-                    style={{
-                      justifyContent: 'center',
-                      width: getHeight(10),
-                      alignSelf: 'center',
-                    }}>
-                    <View style={{left: getHeight(15)}}>
-                      <SvgIcon.EmptyCartTwo
+                    style={{height: getHeight(1.2), justifyContent: 'center'}}>
+                    <View
+                      style={{
+                        justifyContent: 'center',
+                        width: getHeight(10),
+                        alignSelf: 'center',
+                      }}>
+                      <View style={{left: getHeight(15)}}>
+                        <SvgIcon.EmptyCartTwo
+                          width={getHeight(10)}
+                          height={getHeight(10)}
+                        />
+                      </View>
+                      <SvgIcon.EmptyCartOne
                         width={getHeight(10)}
                         height={getHeight(10)}
                       />
                     </View>
-                    <SvgIcon.EmptyCartOne
-                      width={getHeight(10)}
-                      height={getHeight(10)}
-                    />
-                  </View>
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      alignSelf: 'center',
-                      fontSize: getHeight(40),
-                      fontWeight: '600',
-                      marginTop: 10,
-                    }}>
-                    {t('cartEmpty')}
-                  </Text>
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      alignSelf: 'center',
-                      fontSize: getHeight(50),
-                      fontWeight: '400',
-                      width: getWidth(1.5),
-                      marginTop: 10,
-                      textAlign: 'center',
-                    }}>
-                    {t('cartEmptySub')}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate(screens.home)}>
                     <Text
                       style={{
-                        color: Colors.primary,
+                        color: Colors.black,
                         alignSelf: 'center',
                         fontSize: getHeight(40),
                         fontWeight: '600',
+                        marginTop: 10,
+                      }}>
+                      {t('cartEmpty')}
+                    </Text>
+                    <Text
+                      style={{
+                        color: Colors.black,
+                        alignSelf: 'center',
+                        fontSize: getHeight(50),
+                        fontWeight: '400',
                         width: getWidth(1.5),
                         marginTop: 10,
                         textAlign: 'center',
-                        textDecorationLine: 'underline',
                       }}>
-                      {t('shopOurProduct')}
+                      {t('cartEmptySub')}
                     </Text>
-                  </TouchableOpacity>
-                </View>
-              );
-            }}
-            ListFooterComponent={() => {
-              return (
-                <>
-                  {cartDetails?.node?.lineItems?.edges.length > 0 && (
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        paddingBottom: 24,
-                        paddingTop: 24,
-                        elevation: 6,
-                        backgroundColor: 'white',
-                        padding: 16,
-                        borderTopWidth: 6,
-                        borderColor: Colors.transparentBlack,
-                      }}>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate(screens.home)}>
+                      <Text
+                        style={{
+                          color: Colors.primary,
+                          alignSelf: 'center',
+                          fontSize: getHeight(40),
+                          fontWeight: '600',
+                          width: getWidth(1.5),
+                          marginTop: 10,
+                          textAlign: 'center',
+                          textDecorationLine: 'underline',
+                        }}>
+                        {t('shopOurProduct')}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                );
+              }}
+              ListFooterComponent={() => {
+                return (
+                  <>
+                    {cartDetails?.cart?.lines?.edges?.length > 0 && (
                       <View
                         style={{
-                          flex: 1,
-                          justifyContent: 'center',
+                          flexDirection: 'row',
+                          paddingBottom: 24,
+                          paddingTop: 24,
+                          elevation: 6,
+                          backgroundColor: 'white',
+                          padding: 16,
+                          borderTopWidth: 6,
+                          borderColor: Colors.transparentBlack,
                         }}>
-                        {cartDetails?.node?.lineItemsSubtotalPrice?.amount !=
-                          cartDetails?.node?.totalPrice?.amount && (
+                        <View
+                          style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                          }}>
+                          {totalDiscount !== 0 && (
+                            <Text
+                              style={{
+                                textDecorationLine: 'line-through',
+                                color: 'grey',
+                                fontWeight: '600',
+                              }}>
+                              {formatPrice(
+                                Number(
+                                  cartDetails?.cart?.cost?.totalAmount?.amount,
+                                ) + totalDiscount,
+                              )}{' '}
+                              {
+                                cartDetails?.cart?.cost?.subtotalAmount
+                                  ?.currencyCode
+                              }
+                            </Text>
+                          )}
+
                           <Text
                             style={{
-                              textDecorationLine: 'line-through',
-                              color: 'grey',
+                              color: Colors.black,
                               fontWeight: '600',
                             }}>
                             {formatPrice(
                               Number(
-                                cartDetails?.node?.lineItemsSubtotalPrice
-                                  ?.amount,
+                                cartDetails?.cart?.cost?.totalAmount?.amount,
                               ),
                             )}{' '}
-                            {
-                              cartDetails?.node?.lineItemsSubtotalPrice
-                                ?.currencyCode
-                            }
+                            {cartDetails?.cart?.cost?.totalAmount?.currencyCode}
                           </Text>
-                        )}
+                        </View>
 
-                        <Text
+                        <TouchableOpacity
+                          onPress={() => {
+                            next();
+                          }}
                           style={{
-                            color: Colors.black,
-                            fontWeight: '600',
+                            backgroundColor: Colors.primary,
+                            alignSelf: 'center',
+                            borderRadius: 10,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            paddingLeft: 20,
+                            paddingRight: 20,
+                            paddingTop: 8,
+                            paddingBottom: 8,
+                            flex: 1,
                           }}>
-                          {formatPrice(
-                            Number(cartDetails?.node?.totalPrice?.amount),
-                          )}{' '}
-                          {cartDetails?.node?.totalPrice?.currencyCode}
-                        </Text>
+                          {!checkLoading ? (
+                            <Text
+                              style={{
+                                color: Colors.white,
+                                fontWeight: '500',
+                                fontSize: 16,
+                              }}>
+                              {t('placeOrder')}
+                            </Text>
+                          ) : (
+                            <ActivityIndicator size="small" color="#FFFFFF" />
+                          )}
+                        </TouchableOpacity>
                       </View>
-
-                      <TouchableOpacity
-                        onPress={() => next()}
-                        style={{
-                          backgroundColor: Colors.primary,
-                          alignSelf: 'center',
-                          borderRadius: 10,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          paddingLeft: 20,
-                          paddingRight: 20,
-                          paddingTop: 8,
-                          paddingBottom: 8,
-                          flex: 1,
-                        }}>
-                        <Text
-                          style={{
-                            color: Colors.white,
-                            fontWeight: '500',
-                            fontSize: 16,
-                          }}>
-                          {t('placeOrder')}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                </>
-              );
-            }}
-          />
-        ) : (
-          <CartSeklton />
-        )}
+                    )}
+                  </>
+                );
+              }}
+            />
+          ) : (
+            <CartSeklton />
+          )}
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 

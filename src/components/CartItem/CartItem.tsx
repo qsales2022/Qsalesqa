@@ -29,9 +29,9 @@ const CartItem: FC<CartItemInterFace> = ({
   removedCallBack,
   updateCallBack,
 }) => {
-  const { id: selectedVariantId, product: productDetails } = product?.variant;
+  const { id: selectedVariantId, product: productDetails } = product?.merchandise;
   const { edges: variants } = productDetails?.variants;
-  let selectedVariant = variants?.find(
+  let selectedVariant = variants?.find( 
     (item: any) => item?.node?.id === selectedVariantId
   );
   console.log(selectedVariant, "VARIENT_SELECTED");
@@ -46,7 +46,8 @@ const CartItem: FC<CartItemInterFace> = ({
   const navigation = useNavigation();
 
   useEffect(() => {
-    console.log("PRODUCT:===", product);
+    console.log("PRODUCT:===", product?.merchandise?.product?.variants?.edges
+      );
   }, []);
 
   useEffect(() => {
@@ -62,7 +63,9 @@ const CartItem: FC<CartItemInterFace> = ({
   }, [updateQuantityData]);
 
   useEffect(() => {
-    console.log(product?.variant?.selectedOptions, "TEST====");
+    console.log(product?.merchandise?.selectedOptions, "TEST====");
+    // console.log(product?.quantity,'price cart');
+    
     // Update the quanty value when quantity changes, to appear latest value first time
     if (product) {
       setQuantity(product?.quantity);
@@ -80,8 +83,8 @@ const CartItem: FC<CartItemInterFace> = ({
       <TouchableOpacity
         onPress={() => {
           navigation.navigate(screens.productDetails, {
-            id: product?.variant?.product?.id,
-            handle: product?.variant?.product?.handle,
+            id: product?.merchandise?.product?.id,
+            handle: product?.merchandise?.product?.handle,
             selectedVariantId: selectedVariantId,
           });
         }}
@@ -115,7 +118,7 @@ const CartItem: FC<CartItemInterFace> = ({
             }}
             numberOfLines={4}
           >
-            {product?.title}
+            {product?.merchandise?.product?.title}
           </Text>
           {/* <Text
             style={{
@@ -136,9 +139,9 @@ const CartItem: FC<CartItemInterFace> = ({
               }}
               numberOfLines={1}
             >
-              {product?.variant?.selectedOptions[0]?.value == "Default Title"
+              {selectedVariant?.node?.title == "Default Title"
                 ? ""
-                : product?.variant?.title}
+                : product?.merchandise?.title}
             </Text>
           </View>
         </View>
@@ -154,8 +157,8 @@ const CartItem: FC<CartItemInterFace> = ({
               fontWeight: "400",
             }}
           >
-            {product?.variant?.price?.currencyCode}{" "}
-            {formatPrice(Number(product?.variant?.price?.amount))}
+            {product?.merchandise?.price?.currencyCode}{" "}
+            {formatPrice(Number(product?.merchandise?.price?.amount))}
           </Text>
         </View>
 
@@ -227,7 +230,7 @@ const CartItem: FC<CartItemInterFace> = ({
         </Text>
         <View style={{ flexDirection: "row", alignSelf: "center" }}>
           <View style={{ alignSelf: "center", marginLeft: 6, marginRight: 6 }}>
-            {product?.discountAllocations.length > 0 && (
+            {product?.discountAllocations?.length > 0 && (
               <Text
                 style={{
                   color: "grey",
@@ -237,28 +240,28 @@ const CartItem: FC<CartItemInterFace> = ({
                 }}
               >
                 {formatPrice(
-                  Number(product?.variant?.price?.amount * product?.quantity)
+                  Number(product?.merchandise?.price?.amount * product?.quantity)
                 )}{" "}
-                {product?.discountAllocations[0].allocatedAmount?.currencyCode}
+                {product?.discountAllocations[0].discountedAmount?.currencyCode}
               </Text>
             )}
           </View>
-          {product?.discountAllocations.length > 0 ? (
+          {product?.discountAllocations?.length > 0 ? (
             <Text style={{ color: Colors.black, fontWeight: "600" }}>
               {formatPrice(
                 Number(
-                  product?.variant?.price?.amount * product?.quantity -
-                    product?.discountAllocations[0].allocatedAmount?.amount
+                  product?.merchandise?.price?.amount * product?.quantity -
+                    product?.discountAllocations[0]?.discountedAmount?.amount
                 )
               )}{" "}
-              {product?.variant?.price?.currencyCode}
+              {product?.merchandise?.price?.currencyCode}
             </Text>
           ) : (
             <Text style={{ color: Colors.black, fontWeight: "600" }}>
               {formatPrice(
-                Number(product?.variant?.price?.amount * product?.quantity)
+                Number(product?.merchandise?.price?.amount * product?.quantity)
               )}{" "}
-              {product?.variant?.price?.currencyCode}
+              {product?.merchandise?.price?.currencyCode}
             </Text>
           )}
         </View>
@@ -272,7 +275,7 @@ const CartItem: FC<CartItemInterFace> = ({
         }}
       /> */}
       <QuantityModal
-        maxValue={product?.variant?.quantityAvailable}
+        maxValue={selectedVariant?.node?.quantityAvailable}
         onSubmit={(value: any) => {
           setQuantity(value);
           setModalOpen(false);

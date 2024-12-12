@@ -20,33 +20,42 @@ const useUpdateQuantity = () => {
       if (value !== null) {
         const response = await graphqlClient.post("", {
           query: `mutation {
-            checkoutLineItemsUpdate(
-              lineItems: [
+            cartLinesUpdate(
+              cartId: "${value}"
+              lines: [
                 {
                   id: "${lineItemId}"
                   quantity: ${quantity}
                 }
               ]
-              checkoutId: "${value}"
             ) {
-              checkout {
+              cart {
                 id
-                lineItems(first: 10) {
+                lines(first: 10) {
                   edges {
                     node {
                       id
-                      title
                       quantity
+                      merchandise {
+                        ... on ProductVariant {
+                          title
+                        }
+                      }
                     }
                   }
                 }
               }
+              userErrors {
+                message
+              }
             }
-          }          
-          `,
+          }`
         });
+        
 
         const { data } = response;
+        console.log(response,'this is response');
+        
         setUpdateQuantityData(data);
         setLoading(false);
         dispatch(toggleLoader(false));

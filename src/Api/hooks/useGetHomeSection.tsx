@@ -35,10 +35,6 @@ const useGetHomeSection = () => {
     if (data?.metaobject?.fields && data?.metaobject?.fields.length > 0) {
       let listData = JSON.parse(data?.metaobject?.fields[0].value);
       // console.log(listData,'listDatalistData');
-      
-      console.log( listData[language?.toLowerCase()]
-      ? listData[language.toLowerCase()]
-      : [],'this sectionddddddda');
       return listData[language?.toLowerCase()]
         ? listData[language.toLowerCase()]
         : [];

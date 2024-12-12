@@ -200,10 +200,8 @@ const Home = ({navigation}: any) => {
       const currentVersion = useTestVersion
         ? testVersion
         : DeviceInfo.getVersion();
-      console.log('Current app version:', currentVersion);
 
       // Log the parameters being sent to checkNeedsUpdate
-      console.log('Checking for updates with version:', currentVersion);
 
       const result = await inAppUpdates.checkNeedsUpdate({
         curVersion: currentVersion,
@@ -218,10 +216,8 @@ const Home = ({navigation}: any) => {
             updateType: IAUUpdateKind.FLEXIBLE,
           };
         }
-        console.log('Update options:', JSON.stringify(updateOptions, null, 2));
 
         await inAppUpdates.startUpdate(updateOptions);
-        console.log('Update process initiated successfully.');
       } else {
         console.log('No update needed.');
       }
@@ -376,7 +372,6 @@ const Home = ({navigation}: any) => {
         category?.category === mountingCategory[categoryIndex]?.category,
     );
     if (findCategoryIndex !== -1) {
-      console.log(findCategoryIndex, 'findCategoryIndex');
       try {
         await homePush(updatedCategories, findCategoryIndex, products);
       } catch (error: any) {

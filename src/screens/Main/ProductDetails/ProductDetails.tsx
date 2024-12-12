@@ -70,6 +70,9 @@ import Animations from '../../../assets/Animations';
 import Translation from '../../../assets/i18n/Translation';
 import {Dropdown} from 'react-native-element-dropdown';
 import strings from '../../../assets/i18n/strings';
+import {AppEventsLogger} from 'react-native-fbsdk-next';
+import {ImageZoom} from '@likashefqet/react-native-image-zoom';
+
 const ProductDetails = ({route, navigation}: any) => {
   const tabRef = useRef<any>();
   const {
@@ -81,7 +84,6 @@ const ProductDetails = ({route, navigation}: any) => {
   const {productImages}: any = useGetProductImages(handle);
   const {productDetails, loading}: any = useGetProductDetails(handle);
   const {productVideo}: any = useGetProductVideo(productDetails?.id);
-  console.log(productVideo, 'DETAILS123');
   const {frequentlyBroughtItem, getFrequentlyBroughtItem}: any =
     useFetchFrequenltyBroughtItem();
   const {response, notify}: any = useNotifiyMe();
@@ -121,14 +123,14 @@ const ProductDetails = ({route, navigation}: any) => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
   const data = [
-    { label: 'Item 1', value: '1' },
-    { label: 'Item 2', value: '2' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
-    { label: 'Item 5', value: '5' },
-    { label: 'Item 6', value: '6' },
-    { label: 'Item 7', value: '7' },
-    { label: 'Item 8', value: '8' },
+    {label: 'Item 1', value: '1'},
+    {label: 'Item 2', value: '2'},
+    {label: 'Item 3', value: '3'},
+    {label: 'Item 4', value: '4'},
+    {label: 'Item 5', value: '5'},
+    {label: 'Item 6', value: '6'},
+    {label: 'Item 7', value: '7'},
+    {label: 'Item 8', value: '8'},
   ];
   let mode = 'test';
   const handleMessage = (event: WebViewMessageEvent) => {
@@ -238,10 +240,9 @@ const ProductDetails = ({route, navigation}: any) => {
   }, [quantity]);
 
   useEffect(() => {
-    // console.log(productDetails?.metafields, "productDetailscheecking");
     if (productDetails) {
       if (productDetails.id) {
-        if (productDetails?.metafields) {          
+        if (productDetails?.metafields) {
           setAddOnList(productDetails?.metafields);
         }
         getDeals(getNoFromId(productDetails?.id));
@@ -267,7 +268,6 @@ const ProductDetails = ({route, navigation}: any) => {
           (item: any) => item?.node?.id === selectedVariantId,
         );
         setSelectedVariant(0);
-        console.log(variantList, 'VARIANTS=====', variantIndex);
         setTimeout(() => {
           setSelectedVariant(
             variantIndex != -1 && variantIndex ? variantIndex : 0,
@@ -291,8 +291,6 @@ const ProductDetails = ({route, navigation}: any) => {
 
   useEffect(() => {
     if (response) {
-      console.log(response?.message, 'messaage');
-
       setNotifyModalOpen(false);
       Toast.show({
         type: 'success',
@@ -304,7 +302,6 @@ const ProductDetails = ({route, navigation}: any) => {
 
   const setSelectedVariant = (_index: number) => {
     setVariant(variantList[_index]);
-    console.log(tabRef.current, 'INDEXWE', _index);
     if (tabRef.current) {
       const index = productImages.findIndex(
         (item: any) =>
@@ -319,6 +316,8 @@ const ProductDetails = ({route, navigation}: any) => {
 
   useEffect(() => {
     if (addCartData) {
+      console.log('cart calling from product');
+
       // console.log("addCartData: ", JSON.stringify(addCartData));
 
       // Vibration.vibrate(100);
@@ -331,9 +330,7 @@ const ProductDetails = ({route, navigation}: any) => {
       getCartData();
     }
   }, [addCartData]);
-  useEffect(() => {
-    console.log(productImages, 'productImages');
-  }, [productImages]);
+  useEffect(() => {}, [productImages]);
   const getNoFromId = (inputString: string) => {
     const numericPart = inputString.match(/\d+/);
     const result = numericPart ? numericPart[0] : '';
@@ -375,16 +372,16 @@ const ProductDetails = ({route, navigation}: any) => {
   }
 
   async function addSelectedItemsToCart() {
-    var lineItems = '';
-    const addToCartPromises = freqItems.map(async (element: any) => {
-      if (element.selected) {
-        lineItems =
-          lineItems +
-          `{variantId: "gid://shopify/ProductVariant/${element.id}" quantity: 1}`;
-      }
-    });
-    await Promise.all(addToCartPromises);
-    addToCartFrequentlyBought(checkoutId, lineItems, '');
+    // Prepare line items as an array of objects
+    const lineItems = freqItems
+      .filter((element: any) => element.selected) // Filter selected items
+      .map((element: any) => ({
+        merchandiseId: `gid://shopify/ProductVariant/${element.id}`, // Correct GID format
+        quantity: 1, // Set quantity
+      }));
+
+    // Call the function to add to cart
+    await addToCartFrequentlyBought(checkoutId, lineItems);
   }
 
   const handleAddOnClick = (index: number) => {
@@ -400,34 +397,42 @@ const ProductDetails = ({route, navigation}: any) => {
   };
 
   const addToCartWithAddOn = async () => {
-   console.log('i am cheking');
-   
-    var lineItems = `{variantId: "gid://shopify/ProductVariant/${getNoFromId(
-      variant?.node?.id,
-    )}" quantity: ${quantity}}`;
-    var ymqOptions = '';
+    // Initialize lineItems as an array
+    const lineItems: {merchandiseId: string; quantity: number}[] = [];
+
+    // Add the main product to lineItems
+    lineItems.push({
+      merchandiseId: `gid://shopify/ProductVariant/${getNoFromId(
+        variant?.node?.id,
+      )}`,
+      quantity: quantity,
+    });
+
+    // Process add-ons and add them to lineItems
     const addToCartPromises = addOnList.map(async (element: any) => {
       if (element.selected) {
-        if (
-          JSON.parse(element?.value)?.data?.ymq1?.options?.['1_1']
-            ?.variant_id != 0
-        ) {
-          lineItems =
-            lineItems +
-            `{variantId: "gid://shopify/ProductVariant/${
-              JSON.parse(element?.value)?.data?.ymq1?.options?.['1_1']
-                ?.variant_id
-            }" quantity: ${quantityAddOn}}`;
+        const addOnData = JSON.parse(element?.value)?.data?.ymq1?.options?.[
+          '1_1'
+        ];
+
+        if (addOnData?.variant_id && addOnData?.variant_id !== 0) {
+          lineItems.push({
+            merchandiseId: `gid://shopify/ProductVariant/${addOnData?.variant_id}`,
+            quantity: quantityAddOn,
+          });
         } else {
           console.log('Product installation');
           console.log('YMQ', JSON.parse(element?.value)?.data?.ymq1?.options);
         }
       }
     });
-    await Promise.all(addToCartPromises);
-    addToCartFrequentlyBought(checkoutId, lineItems, ymqOptions);
-  };
 
+    // Wait for all promises to complete
+    await Promise.all(addToCartPromises);
+
+    // Call the function with the array of objects
+    addToCartFrequentlyBought(checkoutId, lineItems);
+  };
   const getItemWidth = (contentLength: any) => {
     console.log('LEN: ', contentLength);
 
@@ -538,8 +543,17 @@ const ProductDetails = ({route, navigation}: any) => {
   };
 
   useEffect(() => {
-    console.log(variantToShow, 'this is naseeb');
-  }, [variantToShow]);
+    if (productDetails?.onlineStoreUrl !== undefined) {
+      AppEventsLogger.logEvent('ViewContent', {
+        content_type: 'product',
+        content_id: productDetails?.onlineStoreUrl,
+        value: variant?.node?.price?.amount,
+        currency: variant?.node?.price?.currencyCode,
+        variant: variant?.node?.title,
+      });
+    }
+  }, [productDetails, variant]);
+
   return (
     <BottomSheetModalProvider>
       <View
@@ -563,7 +577,6 @@ const ProductDetails = ({route, navigation}: any) => {
                   <PagerView
                     style={styles.imageContainer}
                     onPageSelected={e => {
-                      console.log(e.nativeEvent.position);
                       setSelectedIndex(e.nativeEvent.position);
                     }}
                     ref={tabRef}>
@@ -576,6 +589,14 @@ const ProductDetails = ({route, navigation}: any) => {
                                 position: 'relative',
                                 height: '100%',
                               }}>
+                              <ImageZoom
+                                uri={item?.node?.image?.url}
+                                key={index}
+                                resizeMode="stretch"
+                                style={CommonStyles.containerFlex1}
+                                isDoubleTapEnabled
+                              />
+                              {/* 
                               <Image
                                 key={index}
                                 resizeMode="stretch"
@@ -583,7 +604,7 @@ const ProductDetails = ({route, navigation}: any) => {
                                 source={{
                                   uri: item?.node?.image?.url,
                                 }}
-                              />
+                              /> */}
                               <View
                                 style={{
                                   // backgroundColor: "green",
@@ -739,60 +760,58 @@ const ProductDetails = ({route, navigation}: any) => {
                       }}
                     />
                   )} */}
-                  {variantList && variantList.length > 1  && (
-                   
-                   <FlatList
-                   horizontal
-                   data={variantToShow}
-                   renderItem={({item, index}) => {
-                     let color = item?.node?.selectedOptions.find(
-                       (variantOptions: any) =>
-                         variantOptions.name === 'Color',
-                     )?.value;
+                  {variantList && variantList.length > 1 && (
+                    <FlatList
+                      horizontal
+                      data={variantToShow}
+                      renderItem={({item, index}) => {
+                        let color = item?.node?.selectedOptions.find(
+                          (variantOptions: any) =>
+                            variantOptions.name === 'Color',
+                        )?.value;
 
-                     let selectedColor = variant?.node?.selectedOptions.find(
-                       (variantOptions: any) =>
-                         variantOptions.name === 'Color',
-                     )?.value;
-                     return (
-                       <TouchableOpacity
-                         key={index}
-                         onPress={() =>
-                           productHasVariantSize(variantList)
-                             ? selectVariantItem({
-                                 name: 'Color',
-                                 value: color,
-                                 selected: variant,
-                               })
-                             : setSelectedVariant(index)
-                         }>
-                         <View
-                           style={{
-                             borderWidth:
-                               (!productHasVariantSize(variantList) &&
-                                 item?.node?.title ==
-                                   variant?.node?.title) ||
-                               color == selectedColor
-                                 ? 2
-                                 : 0,
-                             borderColor: Colors.primary,
-                             margin: getWidth(50),
-                             opacity:
-                               item?.node?.quantityAvailable > 0 ? 1 : 0.5,
-                           }}>
-                           <Image
-                             resizeMode="stretch"
-                             style={styles.varientImage}
-                             source={{
-                               uri: item?.node?.image?.url,
-                             }}
-                           />
-                         </View>
-                       </TouchableOpacity>
-                     );
-                   }}
-                 />
-                    
+                        let selectedColor = variant?.node?.selectedOptions.find(
+                          (variantOptions: any) =>
+                            variantOptions.name === 'Color',
+                        )?.value;
+                        return (
+                          <TouchableOpacity
+                            key={index}
+                            onPress={() =>
+                              productHasVariantSize(variantList)
+                                ? selectVariantItem({
+                                    name: 'Color',
+                                    value: color,
+                                    selected: variant,
+                                  })
+                                : setSelectedVariant(index)
+                            }>
+                            <View
+                              style={{
+                                borderWidth:
+                                  (!productHasVariantSize(variantList) &&
+                                    item?.node?.title ==
+                                      variant?.node?.title) ||
+                                  color == selectedColor
+                                    ? 2
+                                    : 0,
+                                borderColor: Colors.primary,
+                                margin: getWidth(50),
+                                opacity:
+                                  item?.node?.quantityAvailable > 0 ? 1 : 0.5,
+                              }}>
+                              <Image
+                                resizeMode="stretch"
+                                style={styles.varientImage}
+                                source={{
+                                  uri: item?.node?.image?.url,
+                                }}
+                              />
+                            </View>
+                          </TouchableOpacity>
+                        );
+                      }}
+                    />
                   )}
                   {variantList &&
                     variantList.length > 1 &&

@@ -66,7 +66,7 @@ const OrderSummery = ({ navigation }: any) => {
 
   useEffect(() => {
     if (cartDetails) {
-      console.log('cartDetails: ', cartDetails);
+      console.log('cartDetails:pppppsumerry', cartDetails);
     }
 
   }, [cartDetails]);

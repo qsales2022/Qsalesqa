@@ -16,27 +16,38 @@ const useRemoveFromCart = () => {
     try {
       const response = await graphqlClient.post('', {
         query: `mutation {
-          checkoutLineItemsRemove(lineItemIds: ["${lineItemId}"], checkoutId: "${checkoutId}") {
-            checkout {
+          cartLinesRemove(cartId: "${checkoutId}", lineIds: ["${lineItemId}"]) {
+            cart {
               id
-              lineItems(first: 5) {
+              lines(first: 5) {
                 edges {
                   node {
-                    title
+                    id
                     quantity
+                    merchandise {
+                      ... on ProductVariant {
+                        title
+                        product {
+                          title
+                        }
+                      }
+                    }
                   }
                 }
               }
             }
-            checkoutUserErrors {
+            userErrors {
               message
             }
           }
-        }
-        `
+        }`
       });
+      
+      
 
       const {data} = response;
+      console.log(response,'response');
+      
       setRemoveCartData(data);
       setLoading(false);
       dispatch(toggleLoader(false));

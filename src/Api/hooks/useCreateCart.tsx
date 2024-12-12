@@ -2,8 +2,8 @@
 // useGetBestSelling.js
 import {useEffect, useState} from 'react';
 import graphqlClient from '../interceptor';
-import { useDispatch } from 'react-redux';
-import { toggleLoader } from '../../redux/reducers/GlobalReducer';
+import {useDispatch} from 'react-redux';
+import {toggleLoader} from '../../redux/reducers/GlobalReducer';
 
 const useCreateCart = () => {
   const [cart, setCart] = useState({});
@@ -14,25 +14,25 @@ const useCreateCart = () => {
     dispatch(toggleLoader(true));
     try {
       const response = await graphqlClient.post('', {
-        query: `mutation {
-          checkoutCreate(input: {}) {
-            checkout {
-              id
-            }
-            checkoutUserErrors {
-              message
-            }
-          }
-        }`,
-          // variables: {
-          //   id: id,
-          // },
-          
+        query: `mutation cartCreate($input: CartInput) {
+  cartCreate(input: $input) {
+    cart {
+      id
+    }
+    userErrors {
+      message
+    }
+  }
+}
+`,
+        // variables: {
+        //   id: '95def434132b42fb7ce069d0e88091dd',
+        // },
       });
 
       const {data} = response;
-      console.log(data,'cf34a353f450b8af7aa7c5fbaf17005d');
-      
+      console.log(data, 'cf34a353f450b8af7aa7c5fbaf17005d');
+
       setCart(data);
 
       setLoading(false);
@@ -44,7 +44,7 @@ const useCreateCart = () => {
     }
   };
 
-  return {cart,createCart};
+  return {cart, createCart};
 };
 
 export default useCreateCart;

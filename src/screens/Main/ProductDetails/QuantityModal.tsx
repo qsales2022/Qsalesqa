@@ -22,6 +22,9 @@ const QuantityModal: FC<QuantityInterface> = ({
   const { t } = useTranslation();
 
   useEffect(() => {
+    console.log(value,
+      maxValue,'ggghh');
+    
     setCount(value);
   }, [value]);
 
@@ -88,7 +91,7 @@ const QuantityModal: FC<QuantityInterface> = ({
             <TextInput
               editable={false}
               onChange={(text: any) => setCount(text)}
-              value={count.toString()}
+              value={count?.toString()}
               keyboardType={"number-pad"}
               style={{
                 fontSize: getHeight(35),

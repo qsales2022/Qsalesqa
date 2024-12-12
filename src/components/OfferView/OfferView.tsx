@@ -6,7 +6,6 @@ import { useNavigation } from "@react-navigation/native";
 import screens from "../../Navigation/screens";
 
 const OfferView = ({ data, onPress }: any) => {
-  console.log(data,'thsi is data');
   
   const navigation: any = useNavigation();
   return (

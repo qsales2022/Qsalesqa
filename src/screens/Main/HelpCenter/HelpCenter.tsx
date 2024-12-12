@@ -101,7 +101,7 @@ const HelpCenter = ({ route, navigation }: any) => {
         <Text style={{marginTop:6,fontSize:12,color:'grey'}}>{t('helpWarning')}</Text>
         <Text style={{marginTop:24,fontSize:16,fontWeight:'500',color:Colors.black}}>{t('connectUs')}</Text>
         <Text style={{marginTop:6,fontSize:14,color:Colors.black}}>{t('email')} : info@qsales.qa</Text>
-        <Text style={{marginTop:6,fontSize:14,color:Colors.black}}>{t('phone')} : +974 3026 5515</Text>
+        <Text style={{marginTop:6,fontSize:14,color:Colors.black}}>{t('phone')} : +974 31223030</Text>
       </View>
     </View>
   );
