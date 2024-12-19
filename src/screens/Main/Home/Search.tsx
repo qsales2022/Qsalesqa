@@ -9,71 +9,74 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
-} from "react-native";
-import React, { FC, useEffect, useState } from "react";
-import Colors from "../../../Theme/Colors";
-import { getHeight, getWidth } from "../../../Theme/Constants";
-import Translation from "../../../assets/i18n/Translation";
-import icons from "../../../assets/icons";
-import strings from "../../../assets/i18n/strings";
-import i18next, { t } from "i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { updateLanguage } from "../../../redux/reducers/AuthReducer";
-import { RootState } from "../../../redux/store";
-import SvgIcon from "../../../assets/SvgIcon";
-import useSearch from "../../../Api/hooks/useSearch";
-import SectionItem from "../../../components/SectionItem/SectionItem";
-import { useNavigation } from "@react-navigation/native";
-import screens from "../../../Navigation/screens";
+} from 'react-native';
+import React, {FC, useEffect, useState} from 'react';
+import Colors from '../../../Theme/Colors';
+import {getHeight, getWidth} from '../../../Theme/Constants';
+import Translation from '../../../assets/i18n/Translation';
+import icons from '../../../assets/icons';
+import strings from '../../../assets/i18n/strings';
+import i18next, {t} from 'i18next';
+import {useDispatch, useSelector} from 'react-redux';
+import {updateLanguage} from '../../../redux/reducers/AuthReducer';
+import {RootState} from '../../../redux/store';
+import SvgIcon from '../../../assets/SvgIcon';
+import useSearch from '../../../Api/hooks/useSearch';
+import SectionItem from '../../../components/SectionItem/SectionItem';
+import {useNavigation} from '@react-navigation/native';
+import screens from '../../../Navigation/screens';
+import {AppEventsLogger} from 'react-native-fbsdk-next';
 
-const Search = ({ route, navigation }: any) => {
-  const { language } = useSelector((state: RootState) => state.AuthReducer);
-  console.log('cheking is ffff');
-  
+const Search = ({route, navigation}: any) => {
+  const {language} = useSelector((state: RootState) => state.AuthReducer);
+
   const dispatch = useDispatch();
   const [selectedLanguage, setLanguage] = useState(language);
-  const { searchDetails, searchProduct,loading } = useSearch();
+  const {searchDetails, searchProduct, loading} = useSearch();
+  const [sreachText, setSearchText] = useState('');
   useEffect(() => {
     if (searchDetails == null) {
-      searchProduct("");
+      searchProduct('');
     }
+    console.log(searchDetails, 'dddddd');
   }, [searchDetails]);
-
+  useEffect(() => {
+    const screenName =
+      navigation.getState().routes[navigation.getState().index]?.name;
+    AppEventsLogger.logEvent('fb_mobile_content_view', {
+      content_name: screenName,
+      content_type: 'screen',
+    });
+  }, []);
   return (
     <View
       style={{
         flex: 1,
         backgroundColor: Colors.transparentBlack,
-        
-        justifyContent: "flex-end",
-      }}
-    >
+
+        justifyContent: 'flex-end',
+      }}>
       <View
         style={{
           flex: 1,
           backgroundColor: Colors.white,
-          
-        }}
-      >
+        }}>
         <View
           style={{
             height: getHeight(12),
             borderBottomWidth: 0.5,
             borderBottomColor: Colors.primary,
-            flexDirection: "row",
-          }}
-        >
+            flexDirection: 'row',
+          }}>
           <View
-            style={{ flexDirection: "row", flex: 1, justifyContent: "center" }}
-          >
+            style={{flexDirection: 'row', flex: 1, justifyContent: 'center'}}>
             <View
               style={{
                 paddingLeft: 16,
                 paddingTop: 16,
                 paddingBottom: 16,
-                alignSelf: "center",
-              }}
-            >
+                alignSelf: 'center',
+              }}>
               {loading ? (
                 <ActivityIndicator size={getHeight(35)} color={Colors.black} />
               ) : (
@@ -81,14 +84,15 @@ const Search = ({ route, navigation }: any) => {
               )}
             </View>
             <TextInput
-              onChangeText={(text) => {
+              onChangeText={text => {
+                setSearchText(text);
                 searchProduct(text);
               }}
-              placeholder={`${t("search")}`}
-              placeholderTextColor={"grey"}
+              placeholder={`${t('search')}`}
+              placeholderTextColor={'grey'}
               style={{
                 flex: 1,
-                height: "100%",
+                height: '100%',
                 paddingLeft: 10,
                 color: Colors.black,
               }}
@@ -98,11 +102,10 @@ const Search = ({ route, navigation }: any) => {
           <TouchableOpacity
             onPress={() => navigation.pop()}
             style={{
-              justifyContent: "center",
-              alignItems: "center",
+              justifyContent: 'center',
+              alignItems: 'center',
               padding: 16,
-            }}
-          >
+            }}>
             <Image
               style={{
                 height: getHeight(55),
@@ -114,7 +117,7 @@ const Search = ({ route, navigation }: any) => {
         </View>
 
         <FlatList
-          style={{ paddingTop: 16, paddingBottom: 16 }}
+          style={{paddingTop: 16, paddingBottom: 16}}
           data={searchDetails}
           numColumns={2}
           ListEmptyComponent={() => {
@@ -122,16 +125,14 @@ const Search = ({ route, navigation }: any) => {
               <>
                 {searchDetails != null && (
                   <View
-                    style={{ height: getHeight(1.2), justifyContent: "center" }}
-                  >
+                    style={{height: getHeight(1.2), justifyContent: 'center'}}>
                     <View
                       style={{
-                        justifyContent: "center",
+                        justifyContent: 'center',
                         width: getHeight(10),
-                        alignSelf: "center",
-                      }}
-                    >
-                      <View style={{ left: getHeight(15) }}>
+                        alignSelf: 'center',
+                      }}>
+                      <View style={{left: getHeight(15)}}>
                         <SvgIcon.EmptyCartTwo
                           width={getHeight(10)}
                           height={getHeight(10)}
@@ -145,25 +146,23 @@ const Search = ({ route, navigation }: any) => {
                     <Text
                       style={{
                         color: Colors.black,
-                        alignSelf: "center",
+                        alignSelf: 'center',
                         fontSize: getHeight(40),
-                        fontWeight: "600",
+                        fontWeight: '600',
                         marginTop: 10,
-                      }}
-                    >
+                      }}>
                       Oops! No result found
                     </Text>
                     <Text
                       style={{
                         color: Colors.black,
-                        alignSelf: "center",
+                        alignSelf: 'center',
                         fontSize: getHeight(50),
-                        fontWeight: "400",
+                        fontWeight: '400',
                         width: getWidth(1.5),
                         marginTop: 10,
-                        textAlign: "center",
-                      }}
-                    >
+                        textAlign: 'center',
+                      }}>
                       Don't worry, try searching something else
                     </Text>
                   </View>
@@ -171,7 +170,7 @@ const Search = ({ route, navigation }: any) => {
               </>
             );
           }}
-          renderItem={({ item, index }: any) => {
+          renderItem={({item, index}: any) => {
             return (
               <SectionItem
                 key={index}
@@ -183,8 +182,9 @@ const Search = ({ route, navigation }: any) => {
                 }}
                 marginLeft={25}
                 price={item?.node?.priceRange?.minVariantPrice?.amount}
-                image={{ uri: item?.node?.images?.edges[0]?.node?.url }}
+                image={{uri: item?.node?.images?.edges[0]?.node?.url}}
                 name={item?.node?.title}
+                page={`${sreachText}|search|${item?.node?.collections.edges?.[0]?.node?.title}`}
               />
             );
           }}
@@ -195,25 +195,25 @@ const Search = ({ route, navigation }: any) => {
 };
 const styles = StyleSheet.create({
   sortFilterContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: getHeight(6),
     minHeight: getHeight(16),
     backgroundColor: Colors.primary,
     width: getWidth(1.5),
-    alignSelf: "center",
+    alignSelf: 'center',
     borderRadius: 30,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   textFilter: {
     color: Colors.white,
-    fontWeight: "500",
+    fontWeight: '500',
     marginLeft: 10,
     fontSize: getHeight(55),
   },
   borderLine: {
     borderRightWidth: 1,
-    height: "60%",
+    height: '60%',
     borderRightColor: Colors.white,
   },
   listContainer: {

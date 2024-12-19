@@ -63,7 +63,7 @@ import filterUniqueSize from '../../../helpers/filterUniqueSize';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import getYouTubeVideoId from '../../../helpers/getYoutubeId';
 import DeatailsSkeleton from './DeatailsSkeleton';
-import BottomSheet from './BottomSheet';
+import BottomSheet from '../MyOrder/BottomSheetOrderTrack';
 import {VELOCITY_EPS} from 'react-native-reanimated/lib/typescript/reanimated2/animation/decay/utils';
 import AnimatedLottieView from 'lottie-react-native';
 import Animations from '../../../assets/Animations';
@@ -553,6 +553,29 @@ const ProductDetails = ({route, navigation}: any) => {
       });
     }
   }, [productDetails, variant]);
+
+  useEffect(() => {
+    const screenName =
+      navigation.getState().routes[navigation.getState().index]?.name;
+    AppEventsLogger.logEvent('fb_mobile_content_view', {
+      content_name: screenName,
+      content_type: 'screen',
+    });
+  }, []);
+  const addToCartFb = (
+    id: string,
+    checkoutId: string,
+    quantity: number,
+  ): any => {
+    // Call the action to add to cart
+    addToCart(id, checkoutId, quantity);
+    AppEventsLogger.logEvent('AddedToCart', {
+      content_ids: id,
+      content_type: 'product',
+      value: quantity,
+      currency: 'QAR',
+    });
+  };
 
   return (
     <BottomSheetModalProvider>
@@ -1698,7 +1721,7 @@ const ProductDetails = ({route, navigation}: any) => {
 
                       addOnList.length > 0 && addOnList[0] != null
                         ? addToCartWithAddOn()
-                        : addToCart(variant?.node?.id, checkoutId, quantity);
+                        : addToCartFb(variant?.node?.id, checkoutId, quantity);
                     }}
                     style={[
                       styles.btnStyle,

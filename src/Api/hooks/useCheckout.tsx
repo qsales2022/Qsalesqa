@@ -31,7 +31,7 @@ const useCheckout = () => {
       const token = await getLogin();
 
       const value = await AsyncStorage.getItem('checkoutId');
-      if (value !== null ) {
+      if (value !== null) {
         const mutation = `
   mutation cartBuyerIdentityUpdate($buyerIdentity: CartBuyerIdentityInput!, $cartId: ID!) {
     cartBuyerIdentityUpdate(buyerIdentity: $buyerIdentity, cartId: $cartId) {
@@ -79,7 +79,6 @@ const useCheckout = () => {
           variables,
         });
 
-
         const {data} = response;
         setCheckout(data);
         setloadingChekout(false);
@@ -92,7 +91,7 @@ const useCheckout = () => {
     }
   };
 
-  return {checkout, checkoutWithShipping };
+  return {checkout, checkoutWithShipping};
 };
 
 export default useCheckout;

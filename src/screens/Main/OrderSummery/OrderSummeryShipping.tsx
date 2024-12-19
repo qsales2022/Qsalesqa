@@ -26,6 +26,7 @@ import {
   useUpdateShipping,
 } from '../../../Api/hooks';
 import {useRoute} from '@react-navigation/native';
+import { AppEventsLogger } from 'react-native-fbsdk-next';
 
 const OrderSummeryShipping = ({route, navigation}: any) => {
   enum DeliveryMethod {
@@ -95,7 +96,14 @@ const OrderSummeryShipping = ({route, navigation}: any) => {
     };
     navigation.navigate(screens.payment, dataToPass);
   };
-
+  useEffect(() => {
+    const screenName =
+      navigation.getState().routes[navigation.getState().index]?.name;
+    AppEventsLogger.logEvent('fb_mobile_content_view', {
+      content_name: screenName,
+      content_type: 'screen',
+    });
+  }, []);
   const priceCard = (label: any, price: any) => {
     return (
       <View

@@ -27,6 +27,7 @@ import { useNavigation } from "@react-navigation/native";
 import screens from "../../../Navigation/screens";
 import { Header } from "../../../components";
 import useGetNotifications from "../../../Api/hooks/useGetNotifications";
+import { AppEventsLogger } from "react-native-fbsdk-next";
 
 const Notifications = ({ route, navigation }: any) => {
   const { data, fetchNotifications }: any = useGetNotifications();
@@ -37,10 +38,13 @@ const Notifications = ({ route, navigation }: any) => {
 
   }, []);
   useEffect(() => {
-
-    console.log("DATA", JSON.stringify(data));
-
-  }, [data]);
+    const screenName =
+      navigation.getState().routes[navigation.getState().index]?.name;
+    AppEventsLogger.logEvent('fb_mobile_content_view', {
+      content_name: screenName,
+      content_type: 'screen',
+    });
+  }, []);
 
   const formattedDate = (timestamp: any) => {
 

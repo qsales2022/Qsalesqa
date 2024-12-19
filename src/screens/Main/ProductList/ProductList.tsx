@@ -22,6 +22,7 @@ import BottomSheetFilter from "../../../components/BottomSheet/BottomSheetFilter
 import BottomSheetSort, {
   sortType,
 } from "../../../components/BottomSheet/BottomSheetSort";
+import { AppEventsLogger } from "react-native-fbsdk-next";
 
 const ProductList = ({ route, navigation }: any) => {
   const { title = "", category = ""} = route?.params || {};
@@ -99,7 +100,14 @@ const ProductList = ({ route, navigation }: any) => {
       setFilteredProducts(tempArray);
     }
   };
-
+  useEffect(() => {
+    const screenName =
+      navigation.getState().routes[navigation.getState().index]?.name;
+    AppEventsLogger.logEvent('fb_mobile_content_view', {
+      content_name: screenName,
+      content_type: 'screen',
+    });
+  }, []);
   return (
     <View style={{ backgroundColor: Colors.white }}>
       <Header

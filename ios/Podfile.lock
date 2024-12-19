@@ -1120,6 +1120,10 @@ PODS:
   - react-native-appsflyer (6.15.1):
     - AppsFlyerFramework (= 6.15.1)
     - React
+  - react-native-blur (4.4.1):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
   - react-native-fbsdk-next (13.1.3):
     - React-Core
     - react-native-fbsdk-next/Core (= 13.1.3)
@@ -1447,6 +1451,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - react-native-appsflyer (from `../node_modules/react-native-appsflyer`)
+  - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-fbsdk-next (from `../node_modules/react-native-fbsdk-next`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
@@ -1593,6 +1598,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   react-native-appsflyer:
     :path: "../node_modules/react-native-appsflyer"
+  react-native-blur:
+    :path: "../node_modules/@react-native-community/blur"
   react-native-fbsdk-next:
     :path: "../node_modules/react-native-fbsdk-next"
   react-native-pager-view:
@@ -1741,6 +1748,7 @@ SPEC CHECKSUMS:
   React-logger: 87a4232dd55485435edfa6803ff0de0b5c9eea1a
   React-Mapbuffer: 6c229dc8f1640457d1f665f0b7d79ab8f604dc8b
   react-native-appsflyer: 84e6e37fe91b8ec22875bd10a50fb8baf9434567
+  react-native-blur: b2b140d3d65077a1d5d26be62d9415f895592344
   react-native-fbsdk-next: 0326e3f3892b3f1cb66bfb884f289e2bb818ee89
   react-native-pager-view: 7c45504fe805a954ebabd005d369937ea1c04de1
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe

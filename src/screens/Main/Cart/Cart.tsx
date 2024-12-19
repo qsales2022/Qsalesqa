@@ -30,6 +30,7 @@ import CartSeklton from './CartSeklton';
 import useChekoutUrl from '../../../Api/hooks/useChekoutUrl';
 import {ActivityIndicator} from 'react-native';
 import {tokenSlice} from '../../../redux/reducers/TokenReducer';
+import {AppEventsLogger} from 'react-native-fbsdk-next';
 
 const Cart = ({navigation}: any) => {
   const {cartDetails, getCartData, loading}: any = useGetCart();
@@ -38,7 +39,9 @@ const Cart = ({navigation}: any) => {
   const {checkout, checkoutWithShipping}: any = useCheckout();
   const {checkoutUrl, createChekout}: any = useChekoutUrl();
   const [checkLoading, setCheckLoading] = useState<boolean>(false);
+  const [eventId, setEventId] = useState('');
   const [totalDiscount, setTotalDiscount] = useState(0);
+  const [eventPrice,setEventPrice] = useState(0)
 
   const dispatch = useDispatch();
   const {t} = useTranslation();
@@ -97,7 +100,7 @@ const Cart = ({navigation}: any) => {
         const url = await createChekout(checkoutId);
         if (url) {
           setCheckLoading(false);
-          navigation.navigate(screens.payment, {url});
+          navigation.navigate(screens.payment, {url,eventPrice,eventId});
         } else {
         }
       }
@@ -105,6 +108,22 @@ const Cart = ({navigation}: any) => {
 
     handleCheckout();
   }, [checkout]);
+
+  useEffect(() => {
+    const screenName =
+      navigation.getState().routes[navigation.getState().index]?.name;
+    AppEventsLogger.logEvent('fb_mobile_content_view', {
+      content_name: screenName,
+      content_type: 'screen',
+    });
+  }, []);
+  useEffect(() => {
+    const mapData = cartDetails?.cart?.lines?.edges?.map((val: any, i: any) => {
+      return val?.node?.merchandise?.id;
+    });    
+    setEventId(mapData)
+    setEventPrice(cartDetails?.cart?.cost?.totalAmount?.amount)
+  }, [cartDetails]);
   return (
     <>
       <View

@@ -1,45 +1,54 @@
-import React, { useState } from "react";
-import { ActivityIndicator, Modal, SafeAreaView, StatusBar, StyleSheet, View ,Text} from "react-native";
+import React, {useState} from 'react';
+import {
+  ActivityIndicator,
+  Modal,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  View,
+  Text,
+} from 'react-native';
 import {
   OrderSummery,
   ProductDetails,
   ProductList,
   Search,
   SuccessScreen,
-} from "../screens";
-import CommonStyles from "../Theme/CommonStyles";
-import Colors from "../Theme/Colors";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeTabs from "./TabNavigation";
-import OrderSummeryShipping from "../screens/Main/OrderSummery/OrderSummeryShipping";
-import PaymentWebView from "../screens/Main/OrderSummery/PaymentWebView";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import SearchModal from "../screens/Main/Home/Search";
-import MyOrderList from "../screens/Main/MyOrder/MyOrderList";
-import WebViewScreen from "../screens/Main/WebView/WebViewScreen";
-import HelpCenter from "../screens/Main/HelpCenter/HelpCenter";
-import { toggleLoader } from "../redux/reducers/GlobalReducer";
-import Notifications from "../screens/Main/Home/Notifications";
+} from '../screens';
+import CommonStyles from '../Theme/CommonStyles';
+import Colors from '../Theme/Colors';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import HomeTabs from './TabNavigation';
+import OrderSummeryShipping from '../screens/Main/OrderSummery/OrderSummeryShipping';
+import PaymentWebView from '../screens/Main/OrderSummery/PaymentWebView';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../redux/store';
+import SearchModal from '../screens/Main/Home/Search';
+import MyOrderList from '../screens/Main/MyOrder/MyOrderList';
+import WebViewScreen from '../screens/Main/WebView/WebViewScreen';
+import HelpCenter from '../screens/Main/HelpCenter/HelpCenter';
+import {toggleLoader} from '../redux/reducers/GlobalReducer';
+import Notifications from '../screens/Main/Home/Notifications';
+import {Header} from '../components';
 const MainNavigation = () => {
   const Stack = createNativeStackNavigator();
   const dispatch = useDispatch();
-  const { isLoading } = useSelector((state: RootState) => state.globalReducer);
+  const {isLoading} = useSelector((state: RootState) => state.globalReducer);
 
   return (
     <>
       <SafeAreaView
-        style={[CommonStyles.containerFlex1, { backgroundColor: Colors.white }]}
-      >
+        style={[CommonStyles.containerFlex1, {backgroundColor: Colors.white}]}>
         <StatusBar
-          barStyle={"dark-content"}
+          barStyle={'dark-content'}
           backgroundColor={Colors.successGreen}
         />
         <Stack.Navigator
           screenOptions={{
-            headerShown: false, 
-          }}
-        >
+            headerShown: false,
+            headerTransparent: true,
+            headerBlurEffect: 'light',
+          }}>
           <Stack.Screen name="HOME_TABS" component={HomeTabs} />
           <Stack.Screen name="SEARCH" component={Search} />
           <Stack.Screen name="NOTIFICATION" component={Notifications} />
@@ -51,21 +60,20 @@ const MainNavigation = () => {
             name="ORDER_SUMMERY_SHIPPING"
             component={OrderSummeryShipping}
           />
-          
+
           <Stack.Screen name="PAYMENT" component={PaymentWebView} />
           <Stack.Screen name="WEB_VIEW" component={WebViewScreen} />
           <Stack.Screen name="SUCCESS_SCREEN" component={SuccessScreen} />
           <Stack.Screen name="HELP_CENTER" component={HelpCenter} />
-          
         </Stack.Navigator>
         <Modal
           animationType="fade"
           transparent={true}
           // visible={isLoading}
           visible={false}
-
-          onRequestClose={() => {   dispatch(toggleLoader(false)); }}
-        >
+          onRequestClose={() => {
+            dispatch(toggleLoader(false));
+          }}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <ActivityIndicator size="large" color={Colors.primary} />

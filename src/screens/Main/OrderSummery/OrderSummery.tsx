@@ -1,7 +1,7 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -14,21 +14,24 @@ import {
   Platform,
 } from 'react-native';
 import Colors from '../../../Theme/Colors';
-import { getHeight, getWidth } from '../../../Theme/Constants';
+import {getHeight, getWidth} from '../../../Theme/Constants';
 import CommonStyles from '../../../Theme/CommonStyles';
 import icons from '../../../assets/icons';
 import SvgIcon from '../../../assets/SvgIcon';
-import { TextInputBox } from '../../../components';
+import {TextInputBox} from '../../../components';
 import screens from '../../../Navigation/screens';
-import { t } from "i18next";
-import { useGetCart, useGetCheckoutPriceDetails } from '../../../Api/hooks';
+import {t} from 'i18next';
+import {useGetCart, useGetCheckoutPriceDetails} from '../../../Api/hooks';
+import {AppEventsLogger} from 'react-native-fbsdk-next';
 
-
-const OrderSummery = ({ navigation }: any) => {
-  enum DeliveryMethod { SHIP, PICKUP }
+const OrderSummery = ({navigation}: any) => {
+  enum DeliveryMethod {
+    SHIP,
+    PICKUP,
+  }
   const [deliveryMethod, setDeliveryMethoid] = useState(DeliveryMethod.SHIP);
-  const { cartDetails, getCartData }: any = useGetCart();
-  const { priceDetails, getPriceDetails }: any = useGetCheckoutPriceDetails();
+  const {cartDetails, getCartData}: any = useGetCart();
+  const {priceDetails, getPriceDetails}: any = useGetCheckoutPriceDetails();
   const [email, setEmail] = useState('');
   const [isInvalidEmail, setInvalidEmail] = useState(false);
   const [invalidEmailMessage, setInvalidEmailMessage] = useState('');
@@ -40,7 +43,8 @@ const OrderSummery = ({ navigation }: any) => {
   const [invalidLastNameMessage, setInvalidLastNameMessage] = useState('');
   const [buildingNumber, setBuildingNumber] = useState('');
   const [isInvalidBuildingNumber, setInvalidBuildingNumber] = useState(false);
-  const [invalidBuildingNumberMessage, setInvalidBuildingNumberMessage] = useState('');
+  const [invalidBuildingNumberMessage, setInvalidBuildingNumberMessage] =
+    useState('');
   const [place, setPlace] = useState('');
   const [isInvalidPlace, setInvalidPlace] = useState(false);
   const [invalidPlaceMessage, setInvalidPlaceMessage] = useState('');
@@ -68,7 +72,6 @@ const OrderSummery = ({ navigation }: any) => {
     if (cartDetails) {
       console.log('cartDetails:pppppsumerry', cartDetails);
     }
-
   }, [cartDetails]);
 
   const isEmailValid = (): boolean => {
@@ -78,111 +81,110 @@ const OrderSummery = ({ navigation }: any) => {
 
   const next = () => {
     if (!isEmailValid()) {
-      setInvalidEmail(true)
-      setInvalidEmailMessage("Enter a valid email")
+      setInvalidEmail(true);
+      setInvalidEmailMessage('Enter a valid email');
       //Scroll to email view
       if (scrollViewRef.current && emailContainerRef.current) {
         emailContainerRef.current.measureInWindow((x, y) => {
-          scrollViewRef.current?.scrollTo({ y, animated: true });
+          scrollViewRef.current?.scrollTo({y, animated: true});
         });
       }
-      return
+      return;
     } else {
-      setInvalidEmail(false)
-      setInvalidEmailMessage("")
+      setInvalidEmail(false);
+      setInvalidEmailMessage('');
     }
 
     if (firstName.trim() == '') {
-      setInvalidFirstName(true)
-      setInvalidFirstNameMessage("Enter a valid first name")
+      setInvalidFirstName(true);
+      setInvalidFirstNameMessage('Enter a valid first name');
       //Scroll to email view
       if (scrollViewRef.current && firstNameContainerRef.current) {
         firstNameContainerRef.current.measureInWindow((x, y) => {
-          scrollViewRef.current?.scrollTo({ y, animated: true });
+          scrollViewRef.current?.scrollTo({y, animated: true});
         });
       }
-      return
+      return;
     } else {
-      setInvalidFirstName(false)
-      setInvalidFirstNameMessage("")
+      setInvalidFirstName(false);
+      setInvalidFirstNameMessage('');
     }
 
-
     if (lastName.trim() == '') {
-      setInvalidLastName(true)
-      setInvalidLastNameMessage("Enter a valid last name")
+      setInvalidLastName(true);
+      setInvalidLastNameMessage('Enter a valid last name');
       //Scroll to email view
       if (scrollViewRef.current && lastNameContainerRef.current) {
         lastNameContainerRef.current.measureInWindow((x, y) => {
-          scrollViewRef.current?.scrollTo({ y, animated: true });
+          scrollViewRef.current?.scrollTo({y, animated: true});
         });
       }
-      return
+      return;
     } else {
-      setInvalidLastName(false)
-      setInvalidLastNameMessage("")
+      setInvalidLastName(false);
+      setInvalidLastNameMessage('');
     }
 
     if (buildingNumber.trim() == '') {
-      setInvalidBuildingNumber(true)
-      setInvalidBuildingNumberMessage("Enter a valid building/street/zone number")
+      setInvalidBuildingNumber(true);
+      setInvalidBuildingNumberMessage(
+        'Enter a valid building/street/zone number',
+      );
       //Scroll to email view
       if (scrollViewRef.current && buildingNumberContainerRef.current) {
         buildingNumberContainerRef.current.measureInWindow((x, y) => {
-          scrollViewRef.current?.scrollTo({ y, animated: true });
+          scrollViewRef.current?.scrollTo({y, animated: true});
         });
       }
-      return
+      return;
     } else {
-      setInvalidBuildingNumber(false)
-      setInvalidBuildingNumberMessage("")
+      setInvalidBuildingNumber(false);
+      setInvalidBuildingNumberMessage('');
     }
 
     if (place.trim() == '') {
-      setInvalidPlace(true)
-      setInvalidPlaceMessage("Enter a valid place/landmark")
+      setInvalidPlace(true);
+      setInvalidPlaceMessage('Enter a valid place/landmark');
       //Scroll to email view
       if (scrollViewRef.current && placeContainerRef.current) {
         placeContainerRef.current.measureInWindow((x, y) => {
-          scrollViewRef.current?.scrollTo({ y, animated: true });
+          scrollViewRef.current?.scrollTo({y, animated: true});
         });
       }
-      return
+      return;
     } else {
-      setInvalidPlace(false)
-      setInvalidPlaceMessage("")
+      setInvalidPlace(false);
+      setInvalidPlaceMessage('');
     }
 
     if (number.trim() == '') {
-      setInvalidNumber(true)
-      setInvalidNumberMessage("Enter a valid phone number")
+      setInvalidNumber(true);
+      setInvalidNumberMessage('Enter a valid phone number');
       //Scroll to email view
       if (scrollViewRef.current && phoneContainerRef.current) {
         phoneContainerRef.current.measureInWindow((x, y) => {
-          scrollViewRef.current?.scrollTo({ y, animated: true });
+          scrollViewRef.current?.scrollTo({y, animated: true});
         });
       }
-      return
+      return;
     } else {
-      setInvalidNumber(false)
-      setInvalidNumberMessage("")
-
+      setInvalidNumber(false);
+      setInvalidNumberMessage('');
     }
 
     if (city.trim() == '') {
-      setInvalidCity(true)
-      setInvalidCityMessage("Enter a valid city")
+      setInvalidCity(true);
+      setInvalidCityMessage('Enter a valid city');
       //Scroll to email view
       if (scrollViewRef.current && cityContainerRef.current) {
         cityContainerRef.current.measureInWindow((x, y) => {
-          scrollViewRef.current?.scrollTo({ y, animated: true });
+          scrollViewRef.current?.scrollTo({y, animated: true});
         });
       }
-      return
+      return;
     } else {
-      setInvalidCity(false)
-      setInvalidCityMessage("")
-
+      setInvalidCity(false);
+      setInvalidCityMessage('');
     }
 
     const dataToPass = {
@@ -192,13 +194,18 @@ const OrderSummery = ({ navigation }: any) => {
       buildingNumber: buildingNumber,
       place: place,
       city: city,
-      number: number
+      number: number,
     };
     navigation.navigate(screens.orderSummeryShipping, dataToPass);
-
-
   };
-
+  useEffect(() => {
+    const screenName =
+      navigation.getState().routes[navigation.getState().index]?.name;
+    AppEventsLogger.logEvent('fb_mobile_content_view', {
+      content_name: screenName,
+      content_type: 'screen',
+    });
+  }, []);
   const priceCard = (label: any, price: any) => {
     return (
       <View
@@ -209,15 +216,15 @@ const OrderSummery = ({ navigation }: any) => {
           alignSelf: 'center',
           marginBottom: 10,
         }}>
-        <Text style={{ fontSize: getHeight(45) }}>{label} </Text>
-        <Text style={{ fontSize: getHeight(45) }}>{price} </Text>
+        <Text style={{fontSize: getHeight(45)}}>{label} </Text>
+        <Text style={{fontSize: getHeight(45)}}>{price} </Text>
       </View>
     );
   };
   return (
     <KeyboardAvoidingView
-      style={[CommonStyles.containerFlex1, { backgroundColor: Colors.white }]}>
-      <ScrollView style={{ paddingBottom: getHeight(2) }} ref={scrollViewRef}>
+      style={[CommonStyles.containerFlex1, {backgroundColor: Colors.white}]}>
+      <ScrollView style={{paddingBottom: getHeight(2)}} ref={scrollViewRef}>
         <View
           style={{
             flexDirection: 'row',
@@ -241,7 +248,7 @@ const OrderSummery = ({ navigation }: any) => {
             Order summary
           </Text>
         </View>
-        <View style={styles.container} >
+        <View style={styles.container}>
           <View
             style={{
               flexDirection: 'row',
@@ -251,17 +258,17 @@ const OrderSummery = ({ navigation }: any) => {
               marginBottom: 20,
             }}>
             <Image
-              style={{ height: getHeight(28), width: getHeight(28) }}
+              style={{height: getHeight(28), width: getHeight(28)}}
               source={icons.check_circle}
             />
             <Text>Information ----</Text>
             <Image
-              style={{ height: getHeight(28), width: getHeight(28) }}
+              style={{height: getHeight(28), width: getHeight(28)}}
               source={icons.check_circle_gray}
             />
             <Text>Shipping ----</Text>
             <Image
-              style={{ height: getHeight(28), width: getHeight(28) }}
+              style={{height: getHeight(28), width: getHeight(28)}}
               source={icons.check_circle_gray}
             />
             <Text>Payment</Text>
@@ -272,8 +279,7 @@ const OrderSummery = ({ navigation }: any) => {
               fontSize: getHeight(50),
               marginBottom: 10,
             }}>
-              { ` ${t("contact_info")} `}
-       
+            {` ${t('contact_info')} `}
           </Text>
           <Text
             style={{
@@ -282,10 +288,18 @@ const OrderSummery = ({ navigation }: any) => {
               marginBottom: 10,
             }}>
             Already have an account ?
-            <Text style={{ color: Colors.primary }}> Log in</Text>
+            <Text style={{color: Colors.primary}}> Log in</Text>
           </Text>
           <View ref={emailContainerRef}>
-            <TextInputBox placeHolder="Email" value={email} onChange={(text: any) => setEmail(text)} isInvalid={isInvalidEmail} invalidMessage={invalidEmailMessage} inputMode={'email'} keyboardType={Platform.OS == 'android' ? 'email-address' : ''} />
+            <TextInputBox
+              placeHolder="Email"
+              value={email}
+              onChange={(text: any) => setEmail(text)}
+              isInvalid={isInvalidEmail}
+              invalidMessage={invalidEmailMessage}
+              inputMode={'email'}
+              keyboardType={Platform.OS == 'android' ? 'email-address' : ''}
+            />
           </View>
           <Text
             style={{
@@ -294,13 +308,35 @@ const OrderSummery = ({ navigation }: any) => {
               marginTop: 10,
               marginBottom: 10,
             }}>
-                { ` ${t("delivery_method")} `}
-            
+            {` ${t('delivery_method')} `}
           </Text>
-          <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity onPress={() => setDeliveryMethoid(DeliveryMethod.SHIP)} style={{ flex: 1, margin: 6, borderWidth: 0.5, borderColor: Colors.primary, height: getHeight(15), borderRadius: getHeight(60), backgroundColor: deliveryMethod == DeliveryMethod.SHIP ? Colors.accent : Colors.white, justifyContent: 'center', flexDirection: 'row' }}>
-              <View style={{ width: getHeight(40), height: getHeight(40), alignSelf: 'center' }}>
-                <SvgIcon.ShipIcon width={getHeight(10)} height={getHeight(10)} />
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              onPress={() => setDeliveryMethoid(DeliveryMethod.SHIP)}
+              style={{
+                flex: 1,
+                margin: 6,
+                borderWidth: 0.5,
+                borderColor: Colors.primary,
+                height: getHeight(15),
+                borderRadius: getHeight(60),
+                backgroundColor:
+                  deliveryMethod == DeliveryMethod.SHIP
+                    ? Colors.accent
+                    : Colors.white,
+                justifyContent: 'center',
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  width: getHeight(40),
+                  height: getHeight(40),
+                  alignSelf: 'center',
+                }}>
+                <SvgIcon.ShipIcon
+                  width={getHeight(10)}
+                  height={getHeight(10)}
+                />
               </View>
               <Text
                 style={{
@@ -310,14 +346,37 @@ const OrderSummery = ({ navigation }: any) => {
                   marginBottom: 10,
                   color: Colors.primary,
                   alignSelf: 'center',
-                  marginLeft: 10
+                  marginLeft: 10,
                 }}>
                 Ship
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setDeliveryMethoid(DeliveryMethod.PICKUP)} style={{ flex: 1, margin: 6, borderWidth: 0.5, borderColor: Colors.primary, height: getHeight(15), borderRadius: getHeight(60), backgroundColor: deliveryMethod == DeliveryMethod.PICKUP ? Colors.accent : Colors.white, flexDirection: 'row', justifyContent: 'center' }}>
-              <View style={{ width: getHeight(40), height: getHeight(40), alignSelf: 'center' }}>
-                <SvgIcon.PickupIcon width={getHeight(10)} height={getHeight(10)} />
+            <TouchableOpacity
+              onPress={() => setDeliveryMethoid(DeliveryMethod.PICKUP)}
+              style={{
+                flex: 1,
+                margin: 6,
+                borderWidth: 0.5,
+                borderColor: Colors.primary,
+                height: getHeight(15),
+                borderRadius: getHeight(60),
+                backgroundColor:
+                  deliveryMethod == DeliveryMethod.PICKUP
+                    ? Colors.accent
+                    : Colors.white,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <View
+                style={{
+                  width: getHeight(40),
+                  height: getHeight(40),
+                  alignSelf: 'center',
+                }}>
+                <SvgIcon.PickupIcon
+                  width={getHeight(10)}
+                  height={getHeight(10)}
+                />
               </View>
               <Text
                 style={{
@@ -327,7 +386,7 @@ const OrderSummery = ({ navigation }: any) => {
                   marginBottom: 10,
                   color: Colors.primary,
                   alignSelf: 'center',
-                  marginLeft: 10
+                  marginLeft: 10,
                 }}>
                 Pick Up
               </Text>
@@ -343,82 +402,119 @@ const OrderSummery = ({ navigation }: any) => {
             Shopping address
           </Text>
           <View ref={firstNameContainerRef}>
-          <Text
+            <Text
               style={{
                 fontWeight: '400',
                 fontSize: getHeight(60),
                 left: '2%',
-                bottom:'2%',
-                color: Colors.black
+                bottom: '2%',
+                color: Colors.black,
               }}>
               First Name
             </Text>
-            <TextInputBox placeHolder="First name" value={firstName} onChange={(text) => setFirstName(text)} isInvalid={isInvalidFirstName} invalidMessage={invalidFirstNameMessage} />
+            <TextInputBox
+              placeHolder="First name"
+              value={firstName}
+              onChange={text => setFirstName(text)}
+              isInvalid={isInvalidFirstName}
+              invalidMessage={invalidFirstNameMessage}
+            />
           </View>
           <View ref={lastNameContainerRef}>
-          <Text
+            <Text
               style={{
                 fontWeight: '400',
                 fontSize: getHeight(60),
                 left: '2%',
-                bottom:'2%',
-                color: Colors.black
+                bottom: '2%',
+                color: Colors.black,
               }}>
               Last Name
             </Text>
-            <TextInputBox placeHolder="Last name" value={lastName} onChange={(text) => setLastName(text)} isInvalid={isInvalidLastName} invalidMessage={invalidLastNameMessage} />
+            <TextInputBox
+              placeHolder="Last name"
+              value={lastName}
+              onChange={text => setLastName(text)}
+              isInvalid={isInvalidLastName}
+              invalidMessage={invalidLastNameMessage}
+            />
           </View>
           <View ref={buildingNumberContainerRef}>
-          <Text
+            <Text
               style={{
                 fontWeight: '400',
                 fontSize: getHeight(60),
                 left: '2%',
-                bottom:'2%',
-                color: Colors.black
+                bottom: '2%',
+                color: Colors.black,
               }}>
               Address 1
             </Text>
-            <TextInputBox placeHolder="Building number/ street number/ zone number" value={buildingNumber} onChange={(text) => setBuildingNumber(text)} isInvalid={isInvalidBuildingNumber} invalidMessage={invalidBuildingNumberMessage} />
+            <TextInputBox
+              placeHolder="Building number/ street number/ zone number"
+              value={buildingNumber}
+              onChange={text => setBuildingNumber(text)}
+              isInvalid={isInvalidBuildingNumber}
+              invalidMessage={invalidBuildingNumberMessage}
+            />
           </View>
           <View ref={placeContainerRef}>
-          <Text
+            <Text
               style={{
                 fontWeight: '400',
                 fontSize: getHeight(60),
                 left: '2%',
-                bottom:'2%',
-                color: Colors.black
+                bottom: '2%',
+                color: Colors.black,
               }}>
               Address 2
             </Text>
-            <TextInputBox placeHolder="Place / Nearest landmark" value={place} onChange={(text) => setPlace(text)} isInvalid={isInvalidPlace} invalidMessage={invalidPlaceMessage} />
+            <TextInputBox
+              placeHolder="Place / Nearest landmark"
+              value={place}
+              onChange={text => setPlace(text)}
+              isInvalid={isInvalidPlace}
+              invalidMessage={invalidPlaceMessage}
+            />
           </View>
           <View ref={cityContainerRef}>
-          <Text
+            <Text
               style={{
                 fontWeight: '400',
                 fontSize: getHeight(60),
                 left: '2%',
-                bottom:'2%',
-                color: Colors.black
+                bottom: '2%',
+                color: Colors.black,
               }}>
               City
             </Text>
-            <TextInputBox placeHolder="City" value={city} onChange={(text) => setCity(text)} isInvalid={isInvalidCity} invalidMessage={invalidCityMessage} />
+            <TextInputBox
+              placeHolder="City"
+              value={city}
+              onChange={text => setCity(text)}
+              isInvalid={isInvalidCity}
+              invalidMessage={invalidCityMessage}
+            />
           </View>
           <View ref={phoneContainerRef}>
-          <Text
+            <Text
               style={{
                 fontWeight: '400',
                 fontSize: getHeight(60),
                 left: '2%',
-                bottom:'2%',
-                color: Colors.black
+                bottom: '2%',
+                color: Colors.black,
               }}>
               Phone
             </Text>
-            <TextInputBox placeHolder="Phone" value={number} onChange={(text) => setNumber(text)} isInvalid={isInvalidNumber} invalidMessage={invalidNumberMessage} keyboardType={Platform.OS == 'android' ? 'phone-pad' : ''} />
+            <TextInputBox
+              placeHolder="Phone"
+              value={number}
+              onChange={text => setNumber(text)}
+              isInvalid={isInvalidNumber}
+              invalidMessage={invalidNumberMessage}
+              keyboardType={Platform.OS == 'android' ? 'phone-pad' : ''}
+            />
           </View>
           <View>
             <Text
@@ -426,12 +522,16 @@ const OrderSummery = ({ navigation }: any) => {
                 fontWeight: '400',
                 fontSize: getHeight(60),
                 left: '2%',
-                bottom:'2%',
-                color: Colors.black
+                bottom: '2%',
+                color: Colors.black,
               }}>
               Country
             </Text>
-            <TextInputBox placeHolder="Country" value={'Qatar'} editable={false}/>
+            <TextInputBox
+              placeHolder="Country"
+              value={'Qatar'}
+              editable={false}
+            />
           </View>
           <Text
             style={{
@@ -440,10 +540,14 @@ const OrderSummery = ({ navigation }: any) => {
               marginBottom: 30,
               marginTop: 20,
             }}>
-            Price details ( {cartDetails?.node?.lineItems?.edges?.length} items selected )
+            Price details ( {cartDetails?.node?.lineItems?.edges?.length} items
+            selected )
           </Text>
 
-          {priceCard('Subtotal', `${priceDetails?.node?.subtotalPriceV2?.currencyCode} ${priceDetails?.node?.subtotalPriceV2?.amount}`)}
+          {priceCard(
+            'Subtotal',
+            `${priceDetails?.node?.subtotalPriceV2?.currencyCode} ${priceDetails?.node?.subtotalPriceV2?.amount}`,
+          )}
           {/* {priceCard('Tax', `${priceDetails?.node?.totalTaxV2?.currencyCode} ${priceDetails?.node?.totalTaxV2?.amount}`)} */}
           {/* {priceCard('Discount', ' QAR 100.00')}
           {priceCard('Coupon discount', 'QAR 20.00')} */}
@@ -456,7 +560,7 @@ const OrderSummery = ({ navigation }: any) => {
               marginBottom: 10,
               marginTop: 10,
             }}>
-            <Text style={{ fontSize: getHeight(40), fontWeight: '500' }}>
+            <Text style={{fontSize: getHeight(40), fontWeight: '500'}}>
               Total amount
             </Text>
             <Text
@@ -495,7 +599,10 @@ const OrderSummery = ({ navigation }: any) => {
             },
             CommonStyles.shadow,
           ]}>
-          <Text style={{ color: Colors.black }}>{cartDetails?.node?.lineItems?.edges?.length} items selected for order</Text>
+          <Text style={{color: Colors.black}}>
+            {cartDetails?.node?.lineItems?.edges?.length} items selected for
+            order
+          </Text>
           <TouchableOpacity
             onPress={() => next()}
             style={{

@@ -45,6 +45,15 @@ const useSearch = () => {
                       currencyCode
                     }
                   }
+                     collections(first: 5) {
+                    edges {
+                      node {
+                        id
+                        title
+                        handle
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -55,6 +64,8 @@ const useSearch = () => {
         },
       });
       const { data } = response;
+      console.log('GraphQL Response Data:', JSON.stringify(data, null, 2));
+
       setSearchDetails(data?.products?.edges);
       setLoading(false);
     } catch (error: any) {

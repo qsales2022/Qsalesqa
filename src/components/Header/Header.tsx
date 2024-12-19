@@ -6,7 +6,7 @@ import {
   View,
 } from 'react-native';
 import React, {FC, useEffect, useState} from 'react';
-import {getHeight, getWidth} from '../../Theme/Constants';
+import {getHeight, getWidth, lightenColor} from '../../Theme/Constants';
 import CommonStyles from '../../Theme/CommonStyles';
 import SvgIcon from '../../assets/SvgIcon';
 import Colors from '../../Theme/Colors';
@@ -25,6 +25,8 @@ interface HeaderInterface {
   hideCart?: boolean;
   page?: string;
   pageNavigation?: string;
+  track?: boolean;
+  orderOpen?: () => void;
 }
 const Header: FC<HeaderInterface> = ({
   title = '',
@@ -36,6 +38,8 @@ const Header: FC<HeaderInterface> = ({
   hideCart,
   page = '',
   pageNavigation = '',
+  track = false,
+  orderOpen,
 }) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [isSearch, setIsSearch] = useState(false);
@@ -56,7 +60,7 @@ const Header: FC<HeaderInterface> = ({
               page === 'list'
             ) {
               console.log('Navigating to MAIN');
-              navigation.push('MAIN'); 
+              navigation.push('MAIN');
             } else {
               console.log('Going back');
               if (navigation.canGoBack()) {
@@ -87,6 +91,27 @@ const Header: FC<HeaderInterface> = ({
           </>
         ) : null}
       </View>
+      {track && (
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginTop: getHeight(80),
+          }}>
+          <TouchableOpacity
+            style={{
+              paddingHorizontal: 23,
+              backgroundColor: lightenColor(Colors.primary, 0),
+              paddingVertical: 10,
+              borderRadius: 10,
+            }}
+            onPress={() => orderOpen?.()}>
+            <Text style={{color: 'white', fontSize: 14, fontWeight: 'bold'}}>
+              Track
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
       {!hideCart && (
         <View
           style={[CommonStyles.containerFlex1, CommonStyles.centerContainer]}>

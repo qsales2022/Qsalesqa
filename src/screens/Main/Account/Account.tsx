@@ -32,18 +32,19 @@ import TermsOfUse from '../../../assets/HtmlContent/TermsOfUse';
 import AboutUs from '../../../assets/HtmlContent/AboutUs';
 import {t} from 'i18next';
 import BottomSheetForgotPassword from '../../../components/BottomSheet/BottomSheetForgotPassword';
+import {AppEventsLogger} from 'react-native-fbsdk-next';
 
 const Account = ({navigation}: any) => {
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const [signupModalVisible, setSignupModalVisible] = useState(false);
   const [forgotModalVisible, setForgotModalVisible] = useState(false);
   const [languageVisible, setLanguageVisible] = useState(false);
+
   const {data, user}: any = useGetLogIn();
   const isFocused = useIsFocused();
   const [token, setToken] = useState(null);
   useEffect(() => {
     getLogin().then(value => {
-      console.log('TOKEN123', value);
       setToken(value);
     });
   }, [isFocused]);
@@ -53,29 +54,14 @@ const Account = ({navigation}: any) => {
       user(token);
     }
   }, [token]);
-
-  // useEffect(() => {
-  //   const getToken = async () => {
-  //     try {
-  //       const value = await AsyncStorage.getItem('login');
-
-  //       console.log(value, 'fcm token getting code here');
-  //       if (value !== null) {
-  //         const parsedData = JSON.parse(value);
-  //         if (parsedData && parsedData.accessToken) {
-  //           console.log(parsedData.accessToken,'fcm token getting code')
-  //           return parsedData.accessToken;
-  //         }
-  //       }
-  //       return null; // Return null if no valid token found
-  //     } catch (error) {
-  //       console.error('Error getting data:', error);
-  //       return null;
-  //     }
-  //   };
-
-  //   getToken();
-  // }, []);
+  useEffect(() => {
+    const screenName =
+      navigation.getState().routes[navigation.getState().index]?.name;
+    AppEventsLogger.logEvent('fb_mobile_content_view', {
+      content_name: screenName,
+      content_type: 'screen',
+    });
+  }, []);
 
   return (
     <View

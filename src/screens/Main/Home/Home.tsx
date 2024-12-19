@@ -55,6 +55,7 @@ import {homePush} from '../../../helpers/HomePush';
 import Translation from '../../../assets/i18n/Translation';
 import {RootState} from '../../../redux/store';
 import axios from 'axios';
+import {AppEventsLogger} from 'react-native-fbsdk-next';
 
 const mountingCategory = [
   {
@@ -206,9 +207,6 @@ const Home = ({navigation}: any) => {
       const result = await inAppUpdates.checkNeedsUpdate({
         curVersion: currentVersion,
       });
-
-      console.log('Update check result:', JSON.stringify(result, null, 2));
-
       if (result.shouldUpdate) {
         let updateOptions = {};
         if (Platform.OS === 'android') {
@@ -229,21 +227,20 @@ const Home = ({navigation}: any) => {
     const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
       handleNotificationNavigation(remoteMessage);
     });
-
     return unsubscribe;
   }, []);
 
   // Handle notification when the app is launched from a cold state
-  
-  // useEffect(() => {
-  //   messaging()
-  //     .getInitialNotification()
-  //     .then(remoteMessage => {
-  //       if (remoteMessage) {
-  //         handleNotificationNavigation(remoteMessage);
-  //       }
-  //     });
-  // }, []);
+
+  useEffect(() => {
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          handleNotificationNavigation(remoteMessage);
+        }
+      });
+  }, []);
 
   const handleNotificationNavigation = (remoteMessage: any) => {
     const {data} = remoteMessage;
@@ -289,7 +286,6 @@ const Home = ({navigation}: any) => {
       }
     } else if (Platform.OS === 'ios') {
       const {status} = await requestNotifications(['alert', 'sound']);
-      console.log('iOS Notification Permission Status:', status);
     }
   };
 
@@ -400,7 +396,14 @@ const Home = ({navigation}: any) => {
   const loadMoreCategory = useCallback(() => {
     if (!categoriesLoading) getItem();
   }, [categoriesLoading]);
-
+  useEffect(() => {
+    const screenName =
+      navigation.getState().routes[navigation.getState().index]?.name;
+    AppEventsLogger.logEvent('fb_mobile_content_view', {
+      content_name: screenName,
+      content_type: 'screen',
+    });
+  }, []);
   const renderItem = ({item, index}: any) => {
     return (
       <View key={item.id.toString()}>

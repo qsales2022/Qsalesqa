@@ -30,10 +30,11 @@ import WebView from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch} from 'react-redux';
 import {toggleLoader} from '../../../redux/reducers/GlobalReducer';
+import {AppEventsLogger} from 'react-native-fbsdk-next';
 
 const PaymentWebView = ({route, navigation}: any) => {
   const {cart, createCart}: any = useCreateCart();
-  const {url} = route.params;
+  const {url, eventPrice, eventId} = route.params;
   const [checkoutCompleted, setCheckoutCompleted]: any = useState(false);
   const dispatch = useDispatch();
   // const {} =
@@ -77,6 +78,18 @@ const PaymentWebView = ({route, navigation}: any) => {
       createCart();
     }
   };
+  useEffect(() => {
+    const screenName =
+      navigation.getState().routes[navigation.getState().index]?.name;
+    AppEventsLogger.logEvent('fb_mobile_content_view', {
+      content_name: screenName,
+      content_type: 'screen',
+    });
+    AppEventsLogger.logPurchase(eventPrice, 'QAR', {
+      content_ids: eventId,
+      content_type: 'product',
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
