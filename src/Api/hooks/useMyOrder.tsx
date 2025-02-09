@@ -10,7 +10,7 @@ const useMyOrder = () => {
   const { language = "EN" } = useSelector(
     (state: RootState) => state.AuthReducer
   );
-  const [orderList, setOrderList] = useState(null);
+  const [orderList, setOrderList] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
@@ -85,7 +85,7 @@ const useMyOrder = () => {
 
   useEffect(() => {}, []);
 
-  return { orderList, getMyOrder };
+  return { orderList, getMyOrder,loading };
 };
 
 export default useMyOrder;

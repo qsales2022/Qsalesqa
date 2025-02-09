@@ -41,12 +41,12 @@ target 'Qsales' do
   pod 'FirebaseCore', :modular_headers => true
   pod 'Firebase/Analytics', '10.24.0'
 
+
   # Add Facebook SDK 
- 
-pod 'FBSDKCoreKit', '~> 17.3'
-pod 'FBSDKLoginKit', '~> 17.3'
-pod 'FBSDKShareKit', '~> 17.3'
-pod 'FBSDKGamingServicesKit', '~> 17.3'
+  pod 'FBSDKCoreKit', '~> 18.0'
+  pod 'FBSDKLoginKit', '~> 18.0'
+  pod 'FBSDKShareKit', '~> 18.0'
+  pod 'FBSDKGamingServicesKit', '~> 18.0'
   config = use_native_modules!
 
   

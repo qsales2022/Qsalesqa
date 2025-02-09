@@ -31,6 +31,7 @@ import useChekoutUrl from '../../../Api/hooks/useChekoutUrl';
 import {ActivityIndicator} from 'react-native';
 import {tokenSlice} from '../../../redux/reducers/TokenReducer';
 import {AppEventsLogger} from 'react-native-fbsdk-next';
+import LottieView from 'lottie-react-native';
 
 const Cart = ({navigation}: any) => {
   const {cartDetails, getCartData, loading}: any = useGetCart();
@@ -41,7 +42,7 @@ const Cart = ({navigation}: any) => {
   const [checkLoading, setCheckLoading] = useState<boolean>(false);
   const [eventId, setEventId] = useState('');
   const [totalDiscount, setTotalDiscount] = useState(0);
-  const [eventPrice,setEventPrice] = useState(0)
+  const [eventPrice, setEventPrice] = useState(0);
 
   const dispatch = useDispatch();
   const {t} = useTranslation();
@@ -100,7 +101,7 @@ const Cart = ({navigation}: any) => {
         const url = await createChekout(checkoutId);
         if (url) {
           setCheckLoading(false);
-          navigation.navigate(screens.payment, {url,eventPrice,eventId});
+          navigation.navigate(screens.payment, {url, eventPrice, eventId});
         } else {
         }
       }
@@ -120,9 +121,10 @@ const Cart = ({navigation}: any) => {
   useEffect(() => {
     const mapData = cartDetails?.cart?.lines?.edges?.map((val: any, i: any) => {
       return val?.node?.merchandise?.id;
-    });    
-    setEventId(mapData)
-    setEventPrice(cartDetails?.cart?.cost?.totalAmount?.amount)
+    });
+    setEventId(mapData);
+     setEventPrice(parseFloat(cartDetails?.cart?.cost?.totalAmount?.amount));
+
   }, [cartDetails]);
   return (
     <>
@@ -187,8 +189,19 @@ const Cart = ({navigation}: any) => {
               ListEmptyComponent={() => {
                 return (
                   <View
-                    style={{height: getHeight(1.2), justifyContent: 'center'}}>
-                    <View
+                    style={{
+                      height: getHeight(1.2),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <LottieView
+                      source={require('../../../assets/Animations/EmptyAnimation.json')}
+                      autoPlay
+                      loop
+                      style={{width: getWidth(4), height: getHeight(4)}}
+                      colorFilters={[{keypath: 'LayerName', color: '#FF0000'}]}
+                    />
+                    {/* <View
                       style={{
                         justifyContent: 'center',
                         width: getHeight(10),
@@ -204,7 +217,8 @@ const Cart = ({navigation}: any) => {
                         width={getHeight(10)}
                         height={getHeight(10)}
                       />
-                    </View>
+                    </View> */}
+
                     <Text
                       style={{
                         color: Colors.black,

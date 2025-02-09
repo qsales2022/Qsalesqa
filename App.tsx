@@ -9,13 +9,13 @@ import Toast, {ToastConfig} from 'react-native-toast-message';
 import {Text, View, TouchableOpacity} from 'react-native';
 import {getHeight, getWidth} from './src/Theme/Constants';
 import Colors from './src/Theme/Colors';
-import messaging from '@react-native-firebase/messaging';
-import firebase from '@react-native-firebase/app';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import screens from './src/Navigation/screens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AppEventsLogger} from 'react-native-fbsdk-next';
 import DeviceInfo from 'react-native-device-info';
+import {ThemeProvider} from '@rneui/themed';
+import {firstUser, getFirstUser} from './src/AsyncStorage/StorageUtil';
+
 
 const App = ({navigation}: any) => {
   const toastConfig: ToastConfig = {
@@ -36,8 +36,14 @@ const App = ({navigation}: any) => {
       </TouchableOpacity>
     ),
     error: ({text1, text2, ...rest}) => (
-      <View style={{backgroundColor: 'red', padding: 16}}>
-        <Text>{text1}</Text>
+      <View
+        style={{
+          backgroundColor: 'red',
+          paddingHorizontal: 16,
+          paddingVertical: 10,
+          borderRadius: 10,
+        }}>
+        <Text style={{color: 'white', fontWeight: 'bold'}}>{text1}</Text>
         <Text>{text2}</Text>
       </View>
     ),
@@ -81,23 +87,24 @@ const App = ({navigation}: any) => {
   useEffect(() => {
     const checkFirstLaunch = async () => {
       try {
-        const isFirstLaunch = await AsyncStorage.getItem('isFirstLaunch');
+        const isFirstLaunch = await getFirstUser('isFirstLaunch');
         if (!isFirstLaunch) {
           trackAppInstall();
-          await AsyncStorage.setItem('isFirstLaunch', 'true');
+          firstUser('isFirstLaunch', 'true');
         }
       } catch (error) {
         console.error('Error checking first launch', error);
       }
     };
-
     checkFirstLaunch();
   }, []);
   return (
     <GestureHandlerRootView>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <Navigation />
+          <ThemeProvider>
+            <Navigation />
+          </ThemeProvider>
         </PersistGate>
         <Toast config={toastConfig} />
       </Provider>

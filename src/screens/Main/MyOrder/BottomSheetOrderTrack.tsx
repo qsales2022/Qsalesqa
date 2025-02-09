@@ -1,9 +1,10 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  Text,
 } from 'react-native';
 import {
   BottomSheetModal,
@@ -16,18 +17,20 @@ import Colors from '../../../Theme/Colors';
 import Svg, {Path} from 'react-native-svg';
 import OrderStatus from './OrderStatus';
 import {useGetOrderStatus} from '../../../Api/hooks/useGetOrderStatus';
+import Toast from 'react-native-toast-message';
+// import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 const BottomSheetOrderTrack = ({bottomSheetModalRef}: any) => {
   const [snapPoints, setSnapPoints] = useState(['10%', '15%']);
   const [status, setStatus] = useState<boolean>(false);
-  const {data, findOrderStatus, loading}: any = useGetOrderStatus();
+  const {findOrderStatus, loading}: any = useGetOrderStatus();
   const [orderNo, setOrderNo] = useState<any>('');
+  const [orderData, setOrderData] = useState<any>([]);
+  const [message, setMessage] = useState<any>('');
 
   const handleFocus = () => {
     setSnapPoints(['10%', '60%']);
     setStatus(true);
-
-    bottomSheetModalRef?.current?.expand();
   };
 
   // const handleBlur = () => {
@@ -36,20 +39,54 @@ const BottomSheetOrderTrack = ({bottomSheetModalRef}: any) => {
   //   // bottomSheetModalRef?.current?.expand();
   // };
 
-  const handleSearch =async  () => {
-    
-    await findOrderStatus(orderNo);
+  const handleSearch = async () => {
+    const response = await findOrderStatus(orderNo);
+
+    console.log(response, 'before datauutt');
+    setSnapPoints(['10%', '60%']);
+    setStatus(true);
+    if (response?.length) {
+      bottomSheetModalRef?.current?.expand();
+      setOrderData(response);
+    } else if (response == 400) {
+      Toast.show({
+        type: 'error',
+        text1: `Order No is required`,
+        position: 'bottom',
+      });
+    } else if (response == 404) {
+      Toast.show({
+        type: 'error',
+        text1: `No orders found`,
+        position: 'bottom',
+      });
+    } else if (response == 500) {
+      Toast.show({
+        type: 'error',
+        text1: `Internal Server Error`,
+        position: 'bottom',
+      });
+    }
   };
+
+  useEffect(() => {
+    console.log(orderData, 'done here bro');
+  }, [orderData]);
 
   return (
     <BottomSheetModalProvider>
       {/* Blur the background conditionally */}
-
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={1}
         snapPoints={snapPoints}
         style={{width: getWidth(1)}}>
+        <View style={{marginLeft: 12}}>
+          <Text style={{fontSize: 12, fontWeight: 'bold'}}>
+            Itemid: {orderData?.length ? orderNo : 'Ex-W1111'}
+          </Text>
+        </View>
+
         <BottomSheetView style={{flex: 1, alignItems: 'center'}}>
           <View style={styles.container}>
             <View
@@ -64,7 +101,7 @@ const BottomSheetOrderTrack = ({bottomSheetModalRef}: any) => {
                 placeholder="Enter Order NO EX-W1111"
                 placeholderTextColor="#808080"
                 onFocus={handleFocus}
-                onChangeText={(text) => setOrderNo(text)} 
+                onChangeText={text => setOrderNo(text)}
                 // onBlur={handleBlur}
               />
               <TouchableOpacity
@@ -94,7 +131,9 @@ const BottomSheetOrderTrack = ({bottomSheetModalRef}: any) => {
                 </Svg>
               </TouchableOpacity>
             </View>
-            {status && <OrderStatus />}
+            {status && orderData?.length > 0 && (
+              <OrderStatus orderData={orderData} />
+            )}
           </View>
         </BottomSheetView>
       </BottomSheetModal>

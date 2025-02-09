@@ -12,12 +12,14 @@ import {useCreateCart, useGetCart} from '../Api/hooks';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
 import {updateCount} from '../redux/reducers/CartReducer';
+import {updateLaunch} from '../redux/reducers/GlobalReducer';
 
 const HomeTabs = () => {
   const isFocused = useIsFocused();
   const Tab = createBottomTabNavigator();
   const {cartDetails, getCartData}: any = useGetCart();
   const {cart, createCart}: any = useCreateCart();
+  const dispatch = useDispatch();
   //const [count, setCount] = useState<any>(0);
   const {count} = useSelector((state: RootState) => state.CartReducer);
   const customTabMenu = (props: any) => {

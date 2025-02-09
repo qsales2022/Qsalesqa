@@ -90,7 +90,7 @@ const useCheckout = () => {
       dispatch(toggleLoader(false));
     }
   };
-
+  
   return {checkout, checkoutWithShipping};
 };
 

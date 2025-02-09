@@ -475,7 +475,7 @@ const Account = ({navigation}: any) => {
             ) {
               Alert.alert(
                 '',
-                data.customerAccessTokenCreate.customerUserErrors[0]?.message,
+                "user not found",
                 [
                   {
                     text: `${t('cancel')}`,

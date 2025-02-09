@@ -3,7 +3,7 @@ import axios from 'axios';
 // Create an instance of axios
 const graphqlClient = axios.create({
   baseURL:
-    'https://qsales-online-shopping.myshopify.com/api/2023-04/graphql.json',
+    'https://qsales-online-shopping.myshopify.com/api/2025-01/graphql.json',
   headers: {
     'Content-Type': 'application/json',
     'X-Shopify-Storefront-Access-Token': 'c8359c68f8402abb41d906daf4ef5e95',

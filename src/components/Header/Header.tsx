@@ -101,7 +101,7 @@ const Header: FC<HeaderInterface> = ({
           <TouchableOpacity
             style={{
               paddingHorizontal: 23,
-              backgroundColor: lightenColor(Colors.primary, 0),
+              backgroundColor: lightenColor(Colors.primary,0),
               paddingVertical: 10,
               borderRadius: 10,
             }}
@@ -110,6 +110,7 @@ const Header: FC<HeaderInterface> = ({
               Track
             </Text>
           </TouchableOpacity>
+          
         </View>
       )}
       {!hideCart && (
@@ -259,4 +260,5 @@ const styles = StyleSheet.create({
     color: Colors.black,
     maxWidth: '90%',
   },
+ 
 });

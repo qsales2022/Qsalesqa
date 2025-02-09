@@ -42,9 +42,12 @@ import {
 import useToken from '../../../Api/hooks/useToken';
 import {View} from 'react-native-animatable';
 import FastImage from 'react-native-fast-image';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {t} from 'i18next';
 import i18n from 'i18next';
 import {requestNotifications} from 'react-native-permissions';
+import InAppReview from 'react-native-in-app-review';
 import messaging from '@react-native-firebase/messaging';
 import firebase from '@react-native-firebase/app';
 import useGetHomeSectionsThree from '../../../Api/hooks/useGetHomeSectionThree';
@@ -56,6 +59,7 @@ import Translation from '../../../assets/i18n/Translation';
 import {RootState} from '../../../redux/store';
 import axios from 'axios';
 import {AppEventsLogger} from 'react-native-fbsdk-next';
+import {getReview, setReview} from '../../../AsyncStorage/StorageUtil';
 
 const mountingCategory = [
   {
@@ -175,12 +179,11 @@ const Home = ({navigation}: any) => {
   const getSectionData = useGetHomeSection();
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
-  // const [currentVersion, setCurrentVersion] = useState("");
-  const [testVersion, setTestVersion] = useState('2.0.1'); // A very low version number for testing
-  // const [updateStatus, setUpdateStatus] = useState("");
-  // const [appInfo, setAppInfo] = useState({});
+  const [testVersion, setTestVersion] = useState('2.0.1');
 
   const {language} = useSelector((state: RootState) => state.AuthReducer);
+  const {launch} = useSelector((state: RootState) => state.globalReducer);
+
   useEffect(() => {
     if (isFocused) {
       requestNotificationPermission();
@@ -370,9 +373,7 @@ const Home = ({navigation}: any) => {
     if (findCategoryIndex !== -1) {
       try {
         await homePush(updatedCategories, findCategoryIndex, products);
-      } catch (error: any) {
-        console.log(error.message, 'home push errr');
-      }
+      } catch (error: any) {}
       //  updatedCategories[findCategoryIndex].item.push(...products);
       if (updatedCategories[findCategoryIndex]?.metaId) {
         try {
@@ -404,6 +405,21 @@ const Home = ({navigation}: any) => {
       content_type: 'screen',
     });
   }, []);
+  useEffect(() => {
+    const checkAndRequestReview = async () => {
+      const hasReviewed = await getReview('hasReviewed');
+      console.log(!hasReviewed, typeof hasReviewed, 'thi is true');
+      if (!hasReviewed && InAppReview.isAvailable()) {
+        InAppReview.RequestInAppReview()
+          .then(() => {
+            setReview('hasReviewed', 'true');
+          })
+          .catch(error => console.log('Error in in-app review:', error));
+      }
+    };
+    setTimeout(checkAndRequestReview, 2000);
+  }, []);
+
   const renderItem = ({item, index}: any) => {
     return (
       <View key={item.id.toString()}>
@@ -424,7 +440,6 @@ const Home = ({navigation}: any) => {
       </View>
     );
   };
-
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}

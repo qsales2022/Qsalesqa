@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {createSlice} from '@reduxjs/toolkit';
 export interface GlobalSliceInterface {
   isLoading: boolean;
   sum: number;
@@ -11,32 +11,34 @@ export interface GlobalSliceInterface {
   };
   selectedEquipment: any;
   selectedTab: any;
+  launch: boolean;
 }
 const initialState: GlobalSliceInterface = {
   isLoading: false,
   showAlert: {
-    title: "",
-    message: "",
+    title: '',
+    message: '',
     isOpen: false,
   },
-  accessToken: "",
-  refreshToken: "",
+  accessToken: '',
+  refreshToken: '',
   sum: 0,
   selectedEquipment: null,
   selectedTab: 0,
+  launch: false,
 };
 export const globalSlice = createSlice({
-  name: "globalReducer",
+  name: 'globalReducer',
   initialState,
   reducers: {
     toggleLoader: (state, action) => {
       state.isLoading = action.payload;
     },
     showAlert: (state, action) => {
-      let alert = { ...action.payload, isOpen: true };
+      let alert = {...action.payload, isOpen: true};
       state.showAlert = alert;
     },
-    hideAlert: (state) => {
+    hideAlert: state => {
       state.showAlert = initialState.showAlert;
     },
     updateEquipment: (state, action) => {
@@ -51,6 +53,9 @@ export const globalSlice = createSlice({
     updateAccessToken: (state, action) => {
       state.accessToken = action.payload.accessToken;
     },
+    updateLaunch: (state, action) => {      
+      state.launch = action.payload;
+    },
   },
 });
 export const {
@@ -59,5 +64,6 @@ export const {
   updateEquipment,
   updateAccessToken,
   updateSelectedTab,
+  updateLaunch,
 } = globalSlice.actions;
 export default globalSlice.reducer;
