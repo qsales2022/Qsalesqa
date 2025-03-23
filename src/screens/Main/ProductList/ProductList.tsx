@@ -1,37 +1,31 @@
-import {
-  View,
-  FlatList,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { BannerStrip, Header, SectionItem } from "../../../components";
-import { useGetProducts } from "../../../Api/hooks";
-import { getHeight, getWidth } from "../../../Theme/Constants";
-import Colors from "../../../Theme/Colors";
-import CommonStyles from "../../../Theme/CommonStyles";
-import SvgIcon from "../../../assets/SvgIcon";
-import Translation from "../../../assets/i18n/Translation";
-import strings from "../../../assets/i18n/strings";
-import screens from "../../../Navigation/screens";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
-import BottomSheet from "../../../components/BottomSheet/BottomSheetFilter";
-import BottomSheetFilter from "../../../components/BottomSheet/BottomSheetFilter";
+import {View, FlatList, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {BannerStrip, Header, SectionItem} from '../../../components';
+import {useGetProducts} from '../../../Api/hooks';
+import {getHeight, getWidth} from '../../../Theme/Constants';
+import Colors from '../../../Theme/Colors';
+import CommonStyles from '../../../Theme/CommonStyles';
+import SvgIcon from '../../../assets/SvgIcon';
+import Translation from '../../../assets/i18n/Translation';
+import strings from '../../../assets/i18n/strings';
+import screens from '../../../Navigation/screens';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
+import BottomSheet from '../../../components/BottomSheet/BottomSheetFilter';
+import BottomSheetFilter from '../../../components/BottomSheet/BottomSheetFilter';
 import BottomSheetSort, {
   sortType,
-} from "../../../components/BottomSheet/BottomSheetSort";
-import { AppEventsLogger } from "react-native-fbsdk-next";
+} from '../../../components/BottomSheet/BottomSheetSort';
+import {AppEventsLogger} from 'react-native-fbsdk-next';
 
-const ProductList = ({ route, navigation }: any) => {
-  const { title = "", category = ""} = route?.params || {};
-  const [search, setSearch] = useState<any>("");
-  const { products } = useGetProducts(category, 200, "");
+const ProductList = ({route, navigation}: any) => {
+  const {title = '', category = '', offerList = {}} = route?.params || {};
+  const [search, setSearch] = useState<any>('');
+  const {products} = useGetProducts(category, 200, '');
   const [productsData, setProducts] = useState<any>([]);
   const [showFilterSheet, setshowFilterSheet] = useState<boolean>(false);
   const [showSortSheet, setshowSortSheet] = useState<boolean>(false);
-  const { count } = useSelector((state: RootState) => state.CartReducer);
+  const {count} = useSelector((state: RootState) => state.CartReducer);
   const [filteredProducts, setFilteredProducts] = useState<any>([]);
   const [minAmount, setMinAmount] = useState(0);
   const [maxAmount, setMaxAmount] = useState(10000);
@@ -39,7 +33,7 @@ const ProductList = ({ route, navigation }: any) => {
   const [outOfStock, setOutOfStock] = useState(true);
 
   useEffect(() => {
-    console.log(JSON.stringify(products), "LIST======");
+    console.log(JSON.stringify(offerList), 'LIST======');
     if (products && products.length > 0) {
       setProducts(products);
       setFilteredProducts(products);
@@ -54,7 +48,7 @@ const ProductList = ({ route, navigation }: any) => {
     minAmount: any,
     maxAmount: any,
     inStock: any,
-    outOfStock: any
+    outOfStock: any,
   ) => {
     setMinAmount(minAmount);
     setMaxAmount(maxAmount);
@@ -66,7 +60,7 @@ const ProductList = ({ route, navigation }: any) => {
         (edge.node?.availableForSale == inStock ||
           !edge.node?.availableForSale == outOfStock) &&
         edge.node?.priceRange?.minVariantPrice?.amount >= minAmount &&
-        edge.node?.priceRange?.minVariantPrice?.amount <= maxAmount
+        edge.node?.priceRange?.minVariantPrice?.amount <= maxAmount,
     );
     setFilteredProducts(tempArray);
     setshowFilterSheet(false);
@@ -78,24 +72,24 @@ const ProductList = ({ route, navigation }: any) => {
       let tempArray = productsData.sort(
         (a: any, b: any) =>
           a.node?.priceRange?.minVariantPrice?.amount -
-          b.node?.priceRange?.minVariantPrice?.amount
+          b.node?.priceRange?.minVariantPrice?.amount,
       );
       setFilteredProducts(tempArray);
     } else if (selectedSort == sortType.highToLow) {
       let tempArray = productsData.sort(
         (a: any, b: any) =>
           b.node?.priceRange?.minVariantPrice?.amount -
-          a.node?.priceRange?.minVariantPrice?.amount
+          a.node?.priceRange?.minVariantPrice?.amount,
       );
       setFilteredProducts(tempArray);
     } else if (selectedSort == sortType.discending) {
       let tempArray = productsData.sort((a: any, b: any) =>
-        b.node?.title.localeCompare(a.node?.title)
+        b.node?.title.localeCompare(a.node?.title),
       );
       setFilteredProducts(tempArray);
     } else if (selectedSort == sortType.ascending) {
       let tempArray = productsData.sort((a: any, b: any) =>
-        a.node?.title.localeCompare(b.node?.title)
+        a.node?.title.localeCompare(b.node?.title),
       );
       setFilteredProducts(tempArray);
     }
@@ -109,14 +103,14 @@ const ProductList = ({ route, navigation }: any) => {
     });
   }, []);
   return (
-    <View style={{ backgroundColor: Colors.white }}>
+    <View style={{backgroundColor: Colors.white}}>
       <Header
         title={title}
         cartCount={count}
         onSearch={(text: any) => setSearch(text)}
         searchValue={search}
         hideSearch={true}
-        onCloseSearch={() => setSearch("")}
+        onCloseSearch={() => setSearch('')}
         page="list"
       />
       <BannerStrip />
@@ -126,7 +120,7 @@ const ProductList = ({ route, navigation }: any) => {
         contentContainerStyle={styles.listContainer}
         data={filteredProducts}
         numColumns={2}
-        renderItem={({ item, index }: any) => {
+        renderItem={({item, index}: any) => {
           return (
             <SectionItem
               key={index}
@@ -134,15 +128,17 @@ const ProductList = ({ route, navigation }: any) => {
                 navigation.navigate(screens.productDetails, {
                   id: item?.node?.id,
                   handle: item?.node?.handle,
-                  pageNavigation: "product_List",
+                  pageNavigation: 'product_List',
                 });
               }}
               marginLeft={25}
               price={item?.node?.priceRange?.minVariantPrice?.amount}
-              image={{ uri: item?.node?.images?.edges[0]?.node?.url }}
+              image={{uri: item?.node?.images?.edges[0]?.node?.url}}
               name={item?.node?.title}
-              offerPrice={item?.node?.variants?.edges[0]?.node?.compareAtPrice?.amount}
-
+              offerPrice={
+                item?.node?.variants?.edges[0]?.node?.compareAtPrice?.amount
+              }
+              offerList={offerList}
             />
           );
         }}
@@ -186,32 +182,32 @@ const ProductList = ({ route, navigation }: any) => {
       <BottomSheetSort
         isVisible={showSortSheet}
         onClose={() => setshowSortSheet(false)}
-        onApply={(selectedSort) => sort(selectedSort)}
+        onApply={selectedSort => sort(selectedSort)}
       />
     </View>
   );
 };
 const styles = StyleSheet.create({
   sortFilterContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: getHeight(6),
     minHeight: getHeight(16),
     backgroundColor: Colors.primary,
     width: getWidth(1.5),
-    alignSelf: "center",
+    alignSelf: 'center',
     borderRadius: 30,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   textFilter: {
     color: Colors.white,
-    fontWeight: "500",
+    fontWeight: '500',
     marginLeft: 10,
     fontSize: getHeight(55),
   },
   borderLine: {
     borderRightWidth: 1,
-    height: "60%",
+    height: '60%',
     borderRightColor: Colors.white,
   },
   listContainer: {

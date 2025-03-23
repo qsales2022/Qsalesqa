@@ -63,7 +63,19 @@ const HelpCenter = ({route, navigation}: any) => {
         <Text style={{color: Colors.black, fontWeight: '500', fontSize: 16}}>
           {t('chatWithUs')}
         </Text>
-        <View
+        <TouchableOpacity
+          onPress={() => {
+            Linking.openURL(
+              'https://api.whatsapp.com/send?phone=97470119277&text=Hi,%20I%20need%20help...',
+            )
+              .then(data => {
+                console.log('WhatsApp Opened: ', data);
+              })
+              .catch(() => {
+                console.log('Unable to open WhatsApp');
+              });
+            //navigation.navigate(screens.webView,{url:'https://api.whatsapp.com/send?phone=97470119277&text=Hi,%20I%20need%20help...',title:`${t('muhammedIrfan')}`})
+          }}
           style={{
             flexDirection: 'row',
             backgroundColor: '#DEF4DC',
@@ -77,8 +89,8 @@ const HelpCenter = ({route, navigation}: any) => {
           <Text style={{flex: 1, marginLeft: 6, color: Colors.black}}>
             {t('chatWithUseSub')}
           </Text>
-        </View>
-        <TouchableOpacity
+        </TouchableOpacity>
+        {/* <TouchableOpacity
           onPress={() => {
             Linking.openURL(
               'https://api.whatsapp.com/send?phone=97470119277&text=Hi,%20I%20need%20help...',
@@ -109,8 +121,8 @@ const HelpCenter = ({route, navigation}: any) => {
               {t('designationHelp')}
             </Text>
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity
           onPress={() => {
             Linking.openURL(
               'https://api.whatsapp.com/send?phone=97470119277&text=Hi,%20I%20need%20help...',
@@ -141,7 +153,7 @@ const HelpCenter = ({route, navigation}: any) => {
               {t('designationHelp')}
             </Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <Text style={{marginTop: 6, fontSize: 12, color: 'grey'}}>
           {t('helpWarning')}
         </Text>

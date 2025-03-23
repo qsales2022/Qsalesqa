@@ -24,6 +24,8 @@ import {
   useGetHomeBannerList,
   useGetHomeSectionsFirst,
   useGetHomeSectionsTwo,
+  useGetCart,
+  useCreateCart,
 } from '../../../Api/hooks';
 import screens from '../../../Navigation/screens';
 import Swiper from 'react-native-swiper';
@@ -60,28 +62,36 @@ import {RootState} from '../../../redux/store';
 import axios from 'axios';
 import {AppEventsLogger} from 'react-native-fbsdk-next';
 import {getReview, setReview} from '../../../AsyncStorage/StorageUtil';
+import useGetOffer from '../../../Api/hooks/useGetOffer';
 
 const mountingCategory = [
+  {
+    category: 'special-offer',
+    title: strings.SpecialOffer,
+    item: [],
+    id: 1,
+  },
   {
     category: 'new-arrivals',
     title: strings.newArrivals,
     item: [],
-    id: 0,
+    id: 1,
   },
+
   {
     category: 'camping-goods-supplies',
     title: strings.campinggoods,
     item: [],
-    id: 1,
+    id: 2,
     metaView: [],
     metaId: '15876423969',
   },
-  {category: 'add-more-save-more', title: 'comboDeals', item: [], id: 2},
+  {category: 'add-more-save-more', title: 'comboDeals', item: [], id: 3},
   {
     category: 'qr-1-qr-29-deals',
     title: 'under30',
     item: [],
-    id: 3,
+    id: 4,
     metaView: [],
     metaId: '15876522273',
   },
@@ -90,40 +100,40 @@ const mountingCategory = [
     title: strings.kitchenImprovement,
     item: [],
 
-    id: 4,
+    id: 5,
   },
   {
     category: 'home-organization',
     title: strings.Homeorganization,
     item: [],
-    id: 5,
+    id: 6,
     metaView: [],
     metaId: '44402147617',
   },
-  {category: 'home-care', title: 'Home Care', item: [], id: 6},
+  {category: 'home-care', title: 'Home Care', item: [], id: 7},
   {
     category: 'home-cleaning',
     title: strings.HomeCleaning,
     item: [],
-    id: 7,
+    id: 8,
     metaView: [],
     metaId: '44902088993',
   },
-  {category: 'racks-storage', title: strings.RacksStorage, item: [], id: 8},
+  {category: 'racks-storage', title: strings.RacksStorage, item: [], id: 9},
   {
     category: 'cooking-appliances',
     title: strings.CookingAppliances,
     item: [],
     metaView: [],
     metaId: '44902220065',
-    id: 9,
+    id: 10,
   },
-  {category: 'bags-pouches', title: strings.Bags, item: [], id: 10},
+  {category: 'bags-pouches', title: strings.Bags, item: [], id: 11},
   {
     category: 'bathroom-laundry-supplies',
     title: strings.BathCare,
     item: [],
-    id: 11,
+    id: 12,
     metaView: [],
     metaId: '44902252833',
   },
@@ -131,13 +141,13 @@ const mountingCategory = [
     category: 'fitness-personal-care',
     title: strings.BeautyFitness,
     item: [],
-    id: 12,
+    id: 13,
   },
   {
     category: 'car-accessories',
     title: strings.CarAccessories,
     item: [],
-    id: 13,
+    id: 14,
   },
 ];
 const collectionHandle1 = [
@@ -164,9 +174,10 @@ const Home = ({navigation}: any) => {
   // const { collections } = useGetCollections(14,collectionHandle);
   const {collections} = useGetCollections(100);
   // const { products } = useGetProducts("best-sellers", 5);
+  const {offerList} = useGetOffer();
+  // let visible = false;
   const {bannerImagesEN, bannerImagesAR}: any = useGetHomeBannerList();
-  const newArrivals = useGetProducts('new-arrivals', 12, '');
-  const newArrivalsProducts = newArrivals.products;
+
   const {getProducts} = useGetCategoryProducts();
   const [categories, setCategories] = useState(mountingCategory);
   const [categoryList, setCategoryList] = useState([]);
@@ -174,15 +185,31 @@ const Home = ({navigation}: any) => {
   const [bestList, setBestList] = useState<any>([]);
   const [categoryIndex, setCategoryIndex] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
+  const [componentRender, setCompnetRender] = useState<boolean>(false);
+  const {cartDetails, getCartData}: any = useGetCart();
+
+  // const [offer, setOffer] = useState<boolean>(true);
   const [categoriesLoading, setCategoriesLoading] = useState<boolean>(true);
   const [swiperData, setSwiperData] = useState<any>('en');
   const getSectionData = useGetHomeSection();
+  const {cart, createCart}: any = useCreateCart();
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
   const [testVersion, setTestVersion] = useState('2.0.1');
+  const newArrivals = useGetProducts(
+    offerList?.hasVisible ? 'special-offer' : 'new-arrivals',
+    12,
+    '',
+  );
 
   const {language} = useSelector((state: RootState) => state.AuthReducer);
   const {launch} = useSelector((state: RootState) => state.globalReducer);
+
+  // useEffect(() => {
+  //   if (!offerList?.hasVisible) {
+  //     categories.unshift();
+  //   }
+  // }, [offerList, newArrivals]);
 
   useEffect(() => {
     if (isFocused) {
@@ -245,6 +272,15 @@ const Home = ({navigation}: any) => {
       });
   }, []);
 
+  // new code
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      handleNotificationNavigation(remoteMessage);
+    });
+
+    return unsubscribe;
+  }, []);
+
   const handleNotificationNavigation = (remoteMessage: any) => {
     const {data} = remoteMessage;
     if (data && data.action_to === 'PRODUCT') {
@@ -259,7 +295,7 @@ const Home = ({navigation}: any) => {
     }
   };
 
-  const subscribeToMyTopic = () => {
+  const subscribeToMyTopic = async () => {
     messaging()
       .subscribeToTopic('promotions')
       .then(() => console.log('Subscribed to topic!'))
@@ -332,22 +368,68 @@ const Home = ({navigation}: any) => {
     [collections],
   );
 
+  // const updateNewList = useCallback(() => {
+  //   if (newArrivalsProducts?.length && categories?.length) {
+  //     setCategories((prev): any => {
+  //       if (prev.length && prev[categoryIndex]?.item.length <= 0) {
+  //         prev[categoryIndex].item = newArrivalsProducts;
+  //         setCategoryIndex(prev => prev + 1);
+  //       }
+  //       return prev;
+  //     });
+  //     setLoading(false);
+  //     setCategoriesLoading(false);
+  //   }
+  // }, [newArrivalsProducts]);
+  // useEffect(() => {
+  //   updateNewList();
+  // }, [newArrivalsProducts]);
   const updateNewList = useCallback(() => {
-    if (newArrivalsProducts.length && categories.length) {
+    if (newArrivals?.products?.length && categories.length) {
       setCategories((prev): any => {
-        if (prev.length && prev[categoryIndex]?.item.length <= 0) {
-          prev[categoryIndex].item = newArrivalsProducts;
-          setCategoryIndex(prev => prev + 1);
+        const updatedCategories = [...prev];
+
+        if (offerList?.hasVisible) {
+          // If hasVisible is true, update special offers
+          console.log(offerList?.hasVisible, 'ddoing chekin==||>>');
+
+          const specialOfferIndex = updatedCategories.findIndex(
+            cat => cat.category === 'special-offer',
+          );
+          console.log(specialOfferIndex, 'ddoing chekin==>>');
+
+          if (specialOfferIndex !== -1) {
+            updatedCategories[specialOfferIndex].item = newArrivals.products;
+          }
+
+          setCategoryIndex(1);
+          // Move to next category after special offers
+        } else {
+          // If hasVisible is false, update new arrivals
+          console.log(offerList?.hasVisible, 'ddoing chekin==<><>>');
+
+          const newArrivalsIndex = updatedCategories.findIndex(
+            cat => cat.category === 'new-arrivals',
+          );
+          console.log(newArrivalsIndex, 'ddoing chekin==>>');
+
+          if (newArrivalsIndex !== -1) {
+            updatedCategories[newArrivalsIndex].item = newArrivals.products;
+          }
+          setCategoryIndex(2);
         }
-        return prev;
+
+        return updatedCategories;
       });
+
       setLoading(false);
       setCategoriesLoading(false);
     }
-  }, [newArrivalsProducts]);
+  }, [newArrivals?.products, offerList?.hasVisible]);
+
   useEffect(() => {
     updateNewList();
-  }, [newArrivalsProducts]);
+  }, [newArrivals?.products, offerList?.hasVisible]);
 
   useEffect(() => {
     const catFiltter = processCollections(collectionHandle1);
@@ -358,6 +440,7 @@ const Home = ({navigation}: any) => {
 
   const getItem = async () => {
     setCategoriesLoading(true);
+    console.log(categoryIndex, 'hai fisrt');
 
     const products = await getProducts(
       mountingCategory[categoryIndex]?.category,
@@ -374,29 +457,28 @@ const Home = ({navigation}: any) => {
       try {
         await homePush(updatedCategories, findCategoryIndex, products);
       } catch (error: any) {}
-      //  updatedCategories[findCategoryIndex].item.push(...products);
       if (updatedCategories[findCategoryIndex]?.metaId) {
         try {
           const sectionList = await getSectionData(
             updatedCategories[findCategoryIndex].metaId,
           );
           updatedCategories[findCategoryIndex].metaView = sectionList;
-        } catch (error: any) {
-          // console.log(error.message, "this is error");
-        }
+        } catch (error: any) {}
       }
 
       setCategories(updatedCategories);
 
       setCategoryIndex(prev => prev + 1);
-
-      setCategoriesLoading(false);
     }
+
+    setCategoriesLoading(false);
   };
   // console.log(categories, "this is section");
   const loadMoreCategory = useCallback(() => {
+    console.log('jdnk');
+
     if (!categoriesLoading) getItem();
-  }, [categoriesLoading]);
+  }, [categoriesLoading, categoryIndex, offerList?.hasVisible, categories]);
   useEffect(() => {
     const screenName =
       navigation.getState().routes[navigation.getState().index]?.name;
@@ -420,7 +502,49 @@ const Home = ({navigation}: any) => {
     setTimeout(checkAndRequestReview, 2000);
   }, []);
 
+  useEffect(() => {
+    if (isFocused) {
+      getCheckoutId();
+    }
+  }, [isFocused]);
+
+  const storeCheckoutId = async (value: any) => {
+    try {
+      await AsyncStorage.setItem('checkoutId', value);
+    } catch (e) {
+      // saving error
+    }
+  };
+
+  const getCheckoutId = async () => {
+    try {
+      const value = await AsyncStorage.getItem('checkoutId');
+      console.log(value, 'values here');
+
+      if (value !== null) {
+        console.log(value, 'values here');
+
+        getCartData();
+      } else {
+        //create cart if no checkoutId present
+        createCart();
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  useEffect(() => {
+    if (cart) {
+      storeCheckoutId(cart?.cartCreate?.cart?.id);
+    }
+  }, [cart]);
+
   const renderItem = ({item, index}: any) => {
+    if (!offerList?.hasVisible && item.category == 'special-offer') {
+      return null;
+    }
+
     return (
       <View key={item.id.toString()}>
         <SectionView
@@ -428,11 +552,13 @@ const Home = ({navigation}: any) => {
             navigation.navigate(screens.productList, {
               title: item.title,
               category: item.category,
+              offerList: offerList || {},
             })
           }
           items={[...item.item]}
           title={item.title}
           page={'home'}
+          offerList={offerList}
         />
         {item?.metaView && item?.metaView.length > 0 && (
           <OfferView data={item?.metaView} />
@@ -466,6 +592,7 @@ const Home = ({navigation}: any) => {
               (item: any, index: number) => {
                 return (
                   <TouchableWithoutFeedback
+                    key={index}
                     onPress={() => {
                       if (item.type == 'collection') {
                         if (item.target_handle == 'all') {
@@ -566,17 +693,17 @@ const Home = ({navigation}: any) => {
         </ScrollView>
         <BannerStrip />
       </View>
-
       {/* Category name */}
       {/* FlatList for each category */}
       {!loading ? (
         <>
           <FlatList
+            key={categories?.length}
             data={categories}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
             onEndReached={loadMoreCategory}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0.1}
           />
         </>
       ) : (

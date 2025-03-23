@@ -1153,7 +1153,7 @@ PODS:
     - React-Core
   - react-native-tracking-transparency (0.1.2):
     - React
-  - react-native-webview (13.13.2):
+  - react-native-webview (13.13.3):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1325,7 +1325,7 @@ PODS:
     - React-logger (= 0.73.9)
     - React-perflogger (= 0.73.9)
   - RecaptchaInterop (100.0.0)
-  - RNCAsyncStorage (2.1.1):
+  - RNCAsyncStorage (2.1.2):
     - React-Core
   - RNDeviceInfo (11.1.0):
     - React-Core
@@ -1344,7 +1344,7 @@ PODS:
     - Firebase/Auth (= 10.24.0)
     - React-Core
     - RNFBApp
-  - RNFBMessaging (21.7.2):
+  - RNFBMessaging (21.12.0):
     - Firebase/Messaging (= 10.24.0)
     - FirebaseCoreExtension
     - React-Core
@@ -1378,11 +1378,10 @@ PODS:
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
     - ReactCommon/turbomodule/core
-  - RNScreens (3.35.0):
+  - RNScreens (3.29.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-    - React-RCTImage
   - RNSVG (13.14.1):
     - React-Core
   - RNVectorIcons (10.2.0):
@@ -1774,7 +1773,7 @@ SPEC CHECKSUMS:
   react-native-safe-area-context: 141eca0fd4e4191288dfc8b96a7c7e1c2983447a
   react-native-sqlite-storage: f6d515e1c446d1e6d026aa5352908a25d4de3261
   react-native-tracking-transparency: 25ff1ff866e338c137c818bdec20526bb05ffcc1
-  react-native-webview: b20263fe41234d8c182530f7a1901f38347c157a
+  react-native-webview: efe79ca6977df1f841810817ce10980930c2eff4
   React-nativeconfig: c1729ab95240ec80d47a2bb8354d8f31138e35a7
   React-NativeModulesApple: 115c934a87f3b45fecb0fada08fa70bab3dff65c
   React-perflogger: c93b6a895eca3f9196656bb20ce0e15ad597a4e9
@@ -1796,17 +1795,17 @@ SPEC CHECKSUMS:
   React-utils: dab84549e65d6d711937b9c34d9f6d8fb8bd711c
   ReactCommon: 3dc453f427d2f3d7f2c71499d191b456f83c59bd
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
-  RNCAsyncStorage: 03861ec2e1e46b20e51963c62c51dc288beb7c43
+  RNCAsyncStorage: addfc2cb6511dbe199c56c6b26ede383b6c38919
   RNDeviceInfo: b899ce37a403a4dea52b7cb85e16e49c04a5b88e
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNFBAnalytics: bf7899a65d3a030221208b26ac96f935362c08ca
   RNFBApp: dd35ba8340b89c36e42c4c137915c01d3c792143
   RNFBAuth: 5e12865e64ffc58f83790f9bc764b0470ce07b1b
-  RNFBMessaging: bb75508e75324ad3793181ef9ade28babf4b7992
+  RNFBMessaging: a18c82f7a74ea8bda660605e42c0eda956302bb4
   RNGestureHandler: f203fa4755a75b02d45a299b07d7ed878f636705
   RNPermissions: 5b96247c15864f9d89d7f51eeb0f2b736a2b212d
   RNReanimated: c076386897b52fb541afa8fffe08ded731d50211
-  RNScreens: 69850d4519d95b9359cec15a67bb5f9d0bd75262
+  RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
   RNSVG: af3907ac5d4fa26a862b75a16d8f15bc74f2ceda
   RNVectorIcons: 04d49881dab53fb3397b1129085271d9d21885c1
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d

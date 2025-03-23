@@ -10,7 +10,6 @@ const useGetProductVideo = (productID: string) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  console.log(productID, "HANDLE====IDD======");
   useEffect(() => {
     const getProductVideo = async () => {
       dispatch(toggleLoader(true));
@@ -40,7 +39,6 @@ const useGetProductVideo = (productID: string) => {
         });
 
         const { data } = response;
-        console.log(data, "VIDEO====RES=");
         if (data) {
           const resultArray = data?.product?.metafields
             .filter(

@@ -1,19 +1,16 @@
-import { View, Text, Touchable, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import React from 'react';
+import { TouchableOpacity, Text, View } from 'react-native';
 
-const Test = ({navigation,route}:any) => {
-  const {id} = route.params
+const Test = () => {
   return (
-    <SafeAreaView>
-      <Text>{id}</Text>
-      <TouchableOpacity onPress={()=>{
-         navigation.push("SPLASH")
-      }}>
-        <Text>click</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <TouchableOpacity onPress={() => console.log('Tapped!')}>
+        <View style={{ backgroundColor: '#6200ea', padding: 15, borderRadius: 30, alignItems: 'center' }}>
+          <Text style={{ color: 'white' }}>Tap Me</Text>
+        </View>
       </TouchableOpacity>
-    </SafeAreaView>
-  )
-}
+    </View>
+  );
+};
 
-export default Test
+export default Test;

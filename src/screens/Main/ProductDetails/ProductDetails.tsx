@@ -72,6 +72,7 @@ import {Dropdown} from 'react-native-element-dropdown';
 import strings from '../../../assets/i18n/strings';
 import {AppEventsLogger} from 'react-native-fbsdk-next';
 import {ImageZoom} from '@likashefqet/react-native-image-zoom';
+import filterUniqueItem from '../../../helpers/filterUniqueItem';
 
 const ProductDetails = ({route, navigation}: any) => {
   const tabRef = useRef<any>();
@@ -97,7 +98,9 @@ const ProductDetails = ({route, navigation}: any) => {
   const [quantityAddOn, setQuantityAddOn] = useState(1);
   const [variantList, setVariantList] = useState<any>([]);
   const [variantToShow, setVariantShow] = useState<any>([]);
+  const [layerToShow, setLayerShow] = useState<any>([]);
   const [sizeToShow, setSizeShow] = useState<any>([]);
+  const [pcsToShow, setPcsToShow] = useState<any>([]);
   const [variant, setVariant] = useState<any>(null);
   const [checkoutId, setCheckoutId] = useState<any>('');
   const [email, setEmail] = useState<string>('');
@@ -122,16 +125,7 @@ const ProductDetails = ({route, navigation}: any) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
-  const data = [
-    {label: 'Item 1', value: '1'},
-    {label: 'Item 2', value: '2'},
-    {label: 'Item 3', value: '3'},
-    {label: 'Item 4', value: '4'},
-    {label: 'Item 5', value: '5'},
-    {label: 'Item 6', value: '6'},
-    {label: 'Item 7', value: '7'},
-    {label: 'Item 8', value: '8'},
-  ];
+
   let mode = 'test';
   const handleMessage = (event: WebViewMessageEvent) => {
     if (event.nativeEvent.data) {
@@ -256,6 +250,7 @@ const ProductDetails = ({route, navigation}: any) => {
 
   useEffect(() => {
     //set Variant list of product
+
     setVariantList(productDetails?.variants?.edges);
   }, [productImages, productDetails]);
 
@@ -316,8 +311,6 @@ const ProductDetails = ({route, navigation}: any) => {
 
   useEffect(() => {
     if (addCartData) {
-      console.log('cart calling from product');
-
       // console.log("addCartData: ", JSON.stringify(addCartData));
 
       // Vibration.vibrate(100);
@@ -385,8 +378,6 @@ const ProductDetails = ({route, navigation}: any) => {
   }
 
   const handleAddOnClick = (index: number) => {
-    console.log('listed one thing');
-
     let list = [...addOnList];
 
     list[index].selected == undefined
@@ -421,8 +412,6 @@ const ProductDetails = ({route, navigation}: any) => {
             quantity: quantityAddOn,
           });
         } else {
-          console.log('Product installation');
-          console.log('YMQ', JSON.parse(element?.value)?.data?.ymq1?.options);
         }
       }
     });
@@ -434,8 +423,6 @@ const ProductDetails = ({route, navigation}: any) => {
     addToCartFrequentlyBought(checkoutId, lineItems);
   };
   const getItemWidth = (contentLength: any) => {
-    console.log('LEN: ', contentLength);
-
     if (contentLength < 10 && contentLength > 5) {
       return 150;
     }
@@ -490,13 +477,36 @@ const ProductDetails = ({route, navigation}: any) => {
   useEffect(() => {
     // console.log('YOUO', JSON.stringify(variantList));
     // console.log('IWNSN', JSON.stringify(productHasVariantSize(variantList)));
-    const colorList = filterUniqueColors(variantList);
+    // if(variantList?.length){
+    //   console.log(variantList[0]?.node.selectedOptions,'this is bro');
 
-    const sizeList = filterUniqueSize(variantList);
+    //   throw new Error('done bro here ')
+    // }
+    const colorList = filterUniqueItem(variantList, 'Color');
+
+    const sizeList = filterUniqueItem(variantList, 'Size');
+    const LayerList = filterUniqueItem(variantList, 'Layer');
+    const PcsList = filterUniqueItem(variantList, 'PCS');
+
+    // if(variantList?.length){
+    //   console.log(variantList[2].node.selectedOptions,'option gg');
+    //   throw new Error('done bro here')
+
+    // }
+    //  console.log(colorList,'sdfasda');
+
     setVariantShow(
-      productHasVariantSize(variantList) ? colorList : variantList,
+      productHasVariantSize(variantList, 'Color') ? colorList : variantList,
     );
-    setSizeShow(productHasVariantSize(variantList) ? sizeList : variantList);
+    setLayerShow(
+      productHasVariantSize(variantList, 'Layer') ? LayerList : variantList,
+    );
+    setSizeShow(
+      productHasVariantSize(variantList, 'Size') ? sizeList : variantList,
+    );
+    setPcsToShow(
+      productHasVariantSize(variantList, 'PCS') ? PcsList : variantList,
+    );
   }, [variantList]);
   const selectVariantItem = ({
     value = null,
@@ -576,6 +586,8 @@ const ProductDetails = ({route, navigation}: any) => {
       currency: 'QAR',
     });
   };
+
+ 
 
   return (
     <BottomSheetModalProvider>
@@ -679,7 +691,7 @@ const ProductDetails = ({route, navigation}: any) => {
                   </View>
                   <Text style={styles.titleTxt}>{productDetails?.title}</Text>
                   <View style={[{marginTop: 16}]}>
-                    {variant?.node?.selectedOptions.map((item: any) => (
+                    {variantToShow?.node?.selectedOptions?.map((item: any) => (
                       <>
                         {item?.name !== 'Size' ? (
                           <View style={{flexDirection: 'row', marginRight: 6}}>
@@ -690,6 +702,7 @@ const ProductDetails = ({route, navigation}: any) => {
                               ]}>
                               {item?.name != 'Title' ? item?.name : ''}{' '}
                             </Text>
+
                             <Text
                               style={[
                                 styles.variantValue,
@@ -704,93 +717,51 @@ const ProductDetails = ({route, navigation}: any) => {
                       </>
                     ))}
                   </View>
-                  {/* {variantList && variantList.length > 1 && mode === 'test' ? (
-                    <Dropdown
-                      style={[
-                        styles.dropdown,
-                        isFocus && {borderColor: 'blue'},
-                      ]}
-                      placeholderStyle={styles.placeholderStyle}
-                      inputSearchStyle={styles.inputSearchStyle}
-                      iconStyle={styles.iconStyle}
-                      data={data}
-                      maxHeight={300}
-                      labelField="label"
-                      valueField="value"
-                      // placeholder={!isFocus ? 'Select item' : '...'}
-                      // value={value}
-                      onFocus={() => setIsFocus(true)}
-                      onBlur={() => setIsFocus(false)}
-                      onChange={(item:any) => {
-                        setValue(item.value);
-                        setIsFocus(false);
-                      }}
-                      renderLeftIcon={() => (
-                        <View>
-                          <Text>naseeb</Text>
-                        </View>
-                      )}
-                    />
-                  ) : (
-                    <FlatList
-                      data={variantToShow}
-                      renderItem={({item, index}) => {
-                        let color = item?.node?.selectedOptions.find(
-                          (variantOptions: any) =>
-                            variantOptions.name === 'Color',
-                        )?.value;
+                  {variantList &&
+                    variantList.length > 1 &&
+                    variantToShow?.length >= 0 &&
+                    productHasVariantSize(variantList, 'Color') && (
+                      <View style={[{marginTop: 16}]}>
+                        {variant?.node?.selectedOptions.map((item: any) => (
+                          <>
+                            {item?.name === 'Color' ? (
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  marginRight: 6,
+                                }}>
+                                <Text
+                                  style={[
+                                    styles.variantTitle,
+                                    {fontWeight: '500'},
+                                  ]}>
+                                  {item?.name != 'Title' ? item?.name : ''}
+                                  {''}:
+                                </Text>
 
-                        let selectedColor = variant?.node?.selectedOptions.find(
-                          (variantOptions: any) =>
-                            variantOptions.name === 'Color',
-                        )?.value;
-                        return (
-                          <TouchableOpacity
-                            key={index}
-                            onPress={() =>
-                              productHasVariantSize(variantList)
-                                ? selectVariantItem({
-                                    name: 'Color',
-                                    value: color,
-                                    selected: variant,
-                                  })
-                                : setSelectedVariant(index)
-                            }>
-                            <View
-                              style={{
-                                borderWidth:
-                                  (!productHasVariantSize(variantList) &&
-                                    item?.node?.title ==
-                                      variant?.node?.title) ||
-                                  color == selectedColor
-                                    ? 2
-                                    : 0,
-                                borderColor: Colors.primary,
-                                margin: getWidth(50),
-                                opacity:
-                                  item?.node?.quantityAvailable > 0 ? 1 : 0.5,
-                              }}>
-                              <Image
-                                resizeMode="stretch"
-                                style={styles.varientImage}
-                                source={{
-                                  uri: item?.node?.image?.url,
-                                }}
-                              />
-                            </View>
-                          </TouchableOpacity>
-                        );
-                      }}
-                    />
-                  )} */}
-                  {variantList && variantList.length > 1 && (
+                                <Text
+                                  style={[
+                                    styles.variantValue,
+                                    {fontWeight: '500'},
+                                  ]}>
+                                  {item?.value != 'Default Title'
+                                    ? item?.value
+                                    : ''}
+                                </Text>
+                              </View>
+                            ) : null}
+                          </>
+                        ))}
+                      </View>
+                    )}
+                  {variantToShow && variantToShow.length > 1 && (
                     <FlatList
                       horizontal
                       data={variantToShow}
                       renderItem={({item, index}) => {
                         let color = item?.node?.selectedOptions.find(
                           (variantOptions: any) =>
-                            variantOptions.name === 'Color',
+                            variantOptions.name == 'Color',
                         )?.value;
 
                         let selectedColor = variant?.node?.selectedOptions.find(
@@ -801,7 +772,7 @@ const ProductDetails = ({route, navigation}: any) => {
                           <TouchableOpacity
                             key={index}
                             onPress={() =>
-                              productHasVariantSize(variantList)
+                              productHasVariantSize(variantList, 'Color')
                                 ? selectVariantItem({
                                     name: 'Color',
                                     value: color,
@@ -812,7 +783,10 @@ const ProductDetails = ({route, navigation}: any) => {
                             <View
                               style={{
                                 borderWidth:
-                                  (!productHasVariantSize(variantList) &&
+                                  (!productHasVariantSize(
+                                    variantList,
+                                    'Size',
+                                  ) &&
                                     item?.node?.title ==
                                       variant?.node?.title) ||
                                   color == selectedColor
@@ -836,10 +810,102 @@ const ProductDetails = ({route, navigation}: any) => {
                       }}
                     />
                   )}
+                  
+                  {variantList &&
+                    variantList.length > 1 &&
+                    pcsToShow.length >= 0 &&
+                    productHasVariantSize(variantList, 'PCS') && (
+                      <>
+                        <View style={[{marginTop: 16}]}>
+                          {variant?.node?.selectedOptions.map((item: any) => (
+                            <>
+                              {item?.name === 'PCS' ? (
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    marginRight: 6,
+                                  }}>
+                                  <Text
+                                    style={[
+                                      styles.variantTitle,
+                                      {fontWeight: '500'},
+                                    ]}>
+                                    {item?.name != 'Title' ? item?.name : ''}
+                                    {''}
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      styles.variantValue,
+                                      {fontWeight: '500'},
+                                    ]}>
+                                    {item?.value != 'Default Title'
+                                      ? item?.value
+                                      : ''}
+                                  </Text>
+                                </View>
+                              ) : null}
+                            </>
+                          ))}
+                        </View>
+
+                        <FlatList
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          data={pcsToShow}
+                          renderItem={({item, index}) => {
+                            let PCS = item?.node?.selectedOptions.find(
+                              (variantOptions: any) =>
+                                variantOptions.name === 'PCS',
+                            )?.value;
+                            let selectedSize =
+                              variant?.node?.selectedOptions.find(
+                                (variantOptions: any) =>
+                                  variantOptions.name === 'PCS',
+                              )?.value;
+                            return (
+                              <TouchableOpacity
+                                key={index}
+                                onPress={() => {
+                                  selectVariantItem({
+                                    value: PCS,
+                                    name: 'PCS',
+                                    selected: variant,
+                                  });
+                                }}>
+                                <View
+                                  style={{
+                                    borderWidth: 2,
+                                    borderColor:
+                                      selectedSize === PCS
+                                        ? Colors.primary
+                                        : Colors.lightPink,
+                                    margin: getWidth(50),
+                                    minWidth: 65,
+                                    paddingLeft: 10,
+                                    paddingRight: 10,
+                                    height: 30,
+                                    borderRadius: 3,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    opacity:
+                                      item?.node?.quantityAvailable > 0
+                                        ? 1
+                                        : 0.5,
+                                  }}>
+                                  <Text style={{color: Colors.black}}>
+                                    {PCS}
+                                  </Text>
+                                </View>
+                              </TouchableOpacity>
+                            );
+                          }}
+                        />
+                      </>
+                    )}
                   {variantList &&
                     variantList.length > 1 &&
                     sizeToShow.length >= 0 &&
-                    productHasVariantSize(variantList) && (
+                    productHasVariantSize(variantList, 'Size') && (
                       <>
                         <View style={[{marginTop: 16}]}>
                           {variant?.node?.selectedOptions.map((item: any) => (
@@ -927,6 +993,97 @@ const ProductDetails = ({route, navigation}: any) => {
                         />
                       </>
                     )}
+                  {variantList &&
+                    variantList?.length > 1 &&
+                    layerToShow?.length >= 0 &&
+                    productHasVariantSize(variantList, 'Layer') && (
+                      <>
+                        <View style={[{marginTop: 16}]}>
+                          {variant?.node?.selectedOptions.map((item: any) => (
+                            <>
+                              {item?.name === 'Layer' ? (
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    marginRight: 6,
+                                  }}>
+                                  <Text
+                                    style={[
+                                      styles.variantTitle,
+                                      {fontWeight: '500'},
+                                    ]}>
+                                    {item?.name != 'Title' ? item?.name : 'nsb'}
+                                    {''}
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      styles.variantValue,
+                                      {fontWeight: '500'},
+                                    ]}>
+                                    {item?.value != 'Default Title'
+                                      ? item?.value
+                                      : ''}
+                                  </Text>
+                                </View>
+                              ) : null}
+                            </>
+                          ))}
+                        </View>
+
+                        <FlatList
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          data={layerToShow}
+                          renderItem={({item, index}) => {
+                            let Layer = item?.node?.selectedOptions.find(
+                              (variantOptions: any) =>
+                                variantOptions.name === 'Layer',
+                            )?.value;
+                            let selectedSize =
+                              variant?.node?.selectedOptions.find(
+                                (variantOptions: any) =>
+                                  variantOptions.name === 'Layer',
+                              )?.value;
+                            return (
+                              <TouchableOpacity
+                                key={index}
+                                onPress={() => {
+                                  selectVariantItem({
+                                    value: Layer,
+                                    name: 'Layer',
+                                    selected: variant,
+                                  });
+                                }}>
+                                <View
+                                  style={{
+                                    borderWidth: 2,
+                                    borderColor:
+                                      selectedSize === Layer
+                                        ? Colors.primary
+                                        : Colors.lightPink,
+                                    margin: getWidth(50),
+                                    minWidth: 65,
+                                    paddingLeft: 10,
+                                    paddingRight: 10,
+                                    height: 30,
+                                    borderRadius: 3,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    opacity:
+                                      item?.node?.quantityAvailable > 0
+                                        ? 1
+                                        : 0.5,
+                                  }}>
+                                  <Text style={{color: Colors.black}}>
+                                    {Layer}
+                                  </Text>
+                                </View>
+                              </TouchableOpacity>
+                            );
+                          }}
+                        />
+                      </>
+                    )}
 
                   <Text style={styles.priceTxt}>
                     {variant?.node?.price?.currencyCode}{' '}
@@ -977,7 +1134,6 @@ const ProductDetails = ({route, navigation}: any) => {
                       data={addOnList}
                       style={{padding: 6}}
                       renderItem={({item, index}) => {
-                        console.log(item, 'YMQ-ITEM=======');
                         return (
                           <>
                             {item && (
@@ -1693,10 +1849,7 @@ const ProductDetails = ({route, navigation}: any) => {
                   <TouchableOpacity
                     onPress={() => {
                       console.log(encodeURIComponent(productDetails?.title));
-                      console.log(
-                        encodeURIComponent(productDetails?.onlineStoreUrl),
-                        'URL=======',
-                      );
+
                       orderByWhatsapp(
                         `I want to buy ✨:\n\n${productDetails?.title}\n${productDetails?.onlineStoreUrl}`,
                       );
@@ -2176,6 +2329,7 @@ const styles = StyleSheet.create({
   },
   variantValue: {
     color: Colors.black,
+    marginLeft: 5,
   },
   inStock: {
     backgroundColor: Colors.green,

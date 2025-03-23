@@ -1,27 +1,28 @@
-const filterUniqueColors = (productArray: any) => {
-  console.log(productArray, "COLOR_MAP_11");
-   
-  const colorMap = new Map();
+const filterUniqueItem = (productArray: any, value: string) => {
+  console.log(productArray, 'COLOR_MAP_11');
+
+  const itemMap = new Map();
   if (productArray) {
     let data = [...productArray];
     data.forEach((item: any) => {
       const colorOption = item.node.selectedOptions.find(
-        (option: any) => option.name === "Color"
+        (option: any) => option.name === value,
       );
+      console.log(colorOption, 'colorOption');
 
       if (colorOption) {
         const colorValue = colorOption.value;
 
-        if (!colorMap.has(colorValue)) {
-          colorMap.set(colorValue, []);
+        if (!itemMap.has(colorValue)) {
+          itemMap.set(colorValue, []);
         }
-        colorMap.get(colorValue).push(item);
+        itemMap.get(colorValue).push(item);
       }
     });
     // Filter the objects with the same color
     const resultArray: any = [];
-    console.log(colorMap, "COLOR_MAP");
-    colorMap.forEach((items) => {
+    console.log(itemMap, 'COLOR_MAP');
+    itemMap.forEach(items => {
       if (items.length >= 1) {
         // If you want only arrays with more than one object with the same color
         // resultArray.push(...items);
@@ -29,8 +30,16 @@ const filterUniqueColors = (productArray: any) => {
         resultArray.push(items[0]);
       }
     });
-    console.log(resultArray, "COLOR_MAP_11====");
+    // if(resultArray?.length){
+    //     console.log(resultArray,value,'resultArrayresultArray');
+
+    //     throw new Error('dsfa')
+
+
+    // }
+
+    
     return resultArray;
   }
 };
-export default filterUniqueColors;
+export default filterUniqueItem;

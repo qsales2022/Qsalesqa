@@ -80,6 +80,11 @@ const useGetProducts = (handle: any, count: any, search: any) => {
   
         const { data } = response;
         setProducts(data?.collection?.products?.edges);
+        if(handle=="kitchen-improvement"){
+          console.log(data?.collection?.products?.edges,'kitchen-improvement09');
+
+        }
+        
         setLoading(false);
         dispatch(toggleLoader(false));
       } catch (error: any) {

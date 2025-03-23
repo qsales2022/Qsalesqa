@@ -25,30 +25,11 @@ const OfferView = ({ data, onPress }: any) => {
       
     }}
     >
-      {/* <FlatList
-        showsHorizontalScrollIndicator={false}
-        horizontal={true}
-        data={data}
-        renderItem={({ item, index }: any) => {
-          // console.log(item, "ITEM========", item?.target_handle);
-          return (
-            <OfferItem
-              onPress={() => {
-                navigation.navigate(screens.productDetails, {
-                  handle: item?.target_handle,
-                });
-              }}
-              key={index}
-              price={item?.price}
-              image={{ uri: item?.image_url }}
-              name={item?.title}
-            />
-          );
-        }}
-      /> */}
+      
       <Image 
       source={{uri:data[0]?.image_url}}
-      style={{width:"100%",height:'100%',marginTop:getHeight(50)}}
+      resizeMode="contain"
+      style={{minWidth:getWidth(1),height:'100%',marginTop:getHeight(50)}}
       />
     </TouchableOpacity>
   );
@@ -59,8 +40,6 @@ export default OfferView;
 const styles = StyleSheet.create({
   container: {
     height: getHeight(7),
-    paddingLeft:getWidth(50),
-    paddingRight:getWidth(50)
     // backgroundColor:'red'
   },
 });

@@ -16,7 +16,6 @@ import DeviceInfo from 'react-native-device-info';
 import {ThemeProvider} from '@rneui/themed';
 import {firstUser, getFirstUser} from './src/AsyncStorage/StorageUtil';
 
-
 const App = ({navigation}: any) => {
   const toastConfig: ToastConfig = {
     success: ({text1, text2, ...rest}) => (

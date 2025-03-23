@@ -128,7 +128,7 @@ const Cart = ({navigation}: any) => {
   }, [cartDetails]);
   return (
     <>
-      <View
+      <SafeAreaView
         style={[CommonStyles.containerFlex1, {backgroundColor: Colors.white}]}>
         <View style={styles.container}>
           <View
@@ -352,7 +352,7 @@ const Cart = ({navigation}: any) => {
             <CartSeklton />
           )}
         </View>
-      </View>
+      </SafeAreaView>
     </>
   );
 };

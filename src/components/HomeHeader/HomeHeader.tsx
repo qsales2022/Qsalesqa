@@ -24,13 +24,14 @@ const HomeHeader = () => {
 
   return (
     <View style={styles.container}>
-      <View style={{ flex: 2 }}>
+      <TouchableOpacity style={{ flex: 2 }} 
+      >
         <Image
           resizeMode="contain"
           style={styles.headerIcon}
           source={images.HeaderIcon}
         />
-      </View>
+      </TouchableOpacity>
 
       <View style={styles.searchContainer}>
         <TouchableOpacity onPress={() => navigation.navigate(screens.search)}>

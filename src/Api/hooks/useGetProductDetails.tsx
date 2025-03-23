@@ -1,14 +1,14 @@
 /* eslint-disable no-catch-shadow */
 // useGetBestSelling.js
-import { useEffect, useState } from "react";
-import graphqlClient from "../interceptor";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleLoader } from "../../redux/reducers/GlobalReducer";
-import { RootState } from "../../redux/store";
+import {useEffect, useState} from 'react';
+import graphqlClient from '../interceptor';
+import {useDispatch, useSelector} from 'react-redux';
+import {toggleLoader} from '../../redux/reducers/GlobalReducer';
+import {RootState} from '../../redux/store';
 
 const useGetProductDetails = (productHandle: string) => {
-  const { language = "EN" } = useSelector(
-    (state: RootState) => state.AuthReducer
+  const {language = 'EN'} = useSelector(
+    (state: RootState) => state.AuthReducer,
   );
 
   const [productDetails, setProductDetails] = useState({});
@@ -20,7 +20,7 @@ const useGetProductDetails = (productHandle: string) => {
     const getProductDetails = async () => {
       dispatch(toggleLoader(true));
       try {
-        const response = await graphqlClient.post("", {
+        const response = await graphqlClient.post('', {
           query:
             `query getProductByHandle @inContext(language: ` +
             language.toUpperCase() +
@@ -74,8 +74,7 @@ const useGetProductDetails = (productHandle: string) => {
           },
         });
 
-        const { data } = response;
-        console.log(data?.metafields, "chekingo done");
+        const {data} = response;
 
         setProductDetails(data?.product);
         setTimeout(() => {
@@ -91,7 +90,7 @@ const useGetProductDetails = (productHandle: string) => {
     getProductDetails();
   }, [productHandle]);
 
-  return { productDetails, loading, error };
+  return {productDetails, loading, error};
 };
 
 export default useGetProductDetails;

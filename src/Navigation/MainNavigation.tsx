@@ -30,6 +30,7 @@ import HelpCenter from '../screens/Main/HelpCenter/HelpCenter';
 import {toggleLoader} from '../redux/reducers/GlobalReducer';
 import Notifications from '../screens/Main/Home/Notifications';
 import {Header} from '../components';
+import Test from '../components/TestUI/Test';
 const MainNavigation = () => {
   const Stack = createNativeStackNavigator();
   const dispatch = useDispatch();
@@ -56,6 +57,7 @@ const MainNavigation = () => {
           <Stack.Screen name="PRODUCT_DETAILS" component={ProductDetails} />
           <Stack.Screen name="ORDER_SUMMERY" component={OrderSummery} />
           <Stack.Screen name="MY_ORDER_LIST" component={MyOrderList} />
+
           <Stack.Screen
             name="ORDER_SUMMERY_SHIPPING"
             component={OrderSummeryShipping}
@@ -65,6 +67,7 @@ const MainNavigation = () => {
           <Stack.Screen name="WEB_VIEW" component={WebViewScreen} />
           <Stack.Screen name="SUCCESS_SCREEN" component={SuccessScreen} />
           <Stack.Screen name="HELP_CENTER" component={HelpCenter} />
+
         </Stack.Navigator>
         <Modal
           animationType="fade"

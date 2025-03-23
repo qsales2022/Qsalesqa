@@ -1,17 +1,16 @@
-const productHasVariantSize = (productArray = []) => {
+const productHasVariantSize = (productArray = [], value: string) => {
   let hasSize = false;
-
-  productArray.forEach((item:any) => {
+  productArray.forEach((item: any) => {
     if (item?.node?.selectedOptions) {
-      item.node.selectedOptions.forEach((option:any) => {
+      console.log(item, 'itemitem');
 
-        if (option?.name === "Size") {
+      item.node.selectedOptions.forEach((option: any) => {
+        if (option?.name === value) {
           hasSize = true;
         }
       });
     }
   });
-
   return hasSize;
 };
 
