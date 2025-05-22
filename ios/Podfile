@@ -47,6 +47,7 @@ target 'Qsales' do
   pod 'FBSDKLoginKit', '~> 18.0'
   pod 'FBSDKShareKit', '~> 18.0'
   pod 'FBSDKGamingServicesKit', '~> 18.0'
+  
   config = use_native_modules!
 
   

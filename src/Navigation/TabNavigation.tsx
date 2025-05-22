@@ -45,6 +45,8 @@ const HomeTabs = () => {
 
   const getCheckoutId = async () => {
     try {
+      console.log('cheking foucse');
+      
       const value = await AsyncStorage.getItem('checkoutId');
       console.log(value, 'values here');
 
@@ -54,6 +56,9 @@ const HomeTabs = () => {
         getCartData();
       } else {
         //create cart if no checkoutId present
+        await AsyncStorage.removeItem('checkoutId');
+         console.log('kmkjj');
+         
         createCart();
       }
     } catch (e) {
@@ -64,7 +69,7 @@ const HomeTabs = () => {
   // get cartId (checkoutId) after creating cart and store to local storage
   useEffect(() => {
     if (cart) {
-      // console.log(cart?.cartCreate?.cart?.id,'ccccc');
+      console.log(cart,'ccccc');
       storeCheckoutId(cart?.cartCreate?.cart?.id);
       // storeCheckoutId(cart?.checkoutCreate?.checkout?.id)
     }

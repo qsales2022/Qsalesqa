@@ -50,7 +50,10 @@ const Cart = ({navigation}: any) => {
   const getCheckoutId = async () => {
     try {
       const value = await AsyncStorage.getItem('checkoutId');
+      
       if (value !== null) {
+        console.log(value,'console.log(value)');
+
         setCheckoutId(value);
       }
     } catch (e) {
@@ -102,6 +105,7 @@ const Cart = ({navigation}: any) => {
         if (url) {
           setCheckLoading(false);
           navigation.navigate(screens.payment, {url, eventPrice, eventId});
+
         } else {
         }
       }

@@ -1963,12 +1963,12 @@
     prompts "^2.4.2"
     semver "^7.5.2"
 
-"@react-native-firebase/analytics@^19.2.2":
+"@react-native-firebase/analytics@19.3.0":
   version "19.3.0"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/analytics/-/analytics-19.3.0.tgz#912e93a9a99eb9c5a8ceb7ad39dca4761274fb98"
   integrity sha512-I+LSDvA2crn8UY78StCqatrUkBD/ZBVaQaunZYnEd4Nsm1R7HycSaW1iUzAB+3sbwLchFr4RcPc++P20m+zzHA==
 
-"@react-native-firebase/app@^19.2.2":
+"@react-native-firebase/app@19.3.0":
   version "19.3.0"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-19.3.0.tgz#d243d31ce0ed6082292a14d42ed11d536831018b"
   integrity sha512-Y4Jlu7s7JasCcOktAN9LC+7SvMeAG04008OxtbhDK9rpatVznJqRSkMefIIwN2yBs94MWo9b61e+7v5IRMbQdw==
@@ -1983,10 +1983,10 @@
   dependencies:
     plist "^3.1.0"
 
-"@react-native-firebase/messaging@^21.7.2":
-  version "21.7.2"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-21.7.2.tgz#12f751d83071880e731d14c77c4082e6b3a3f8fb"
-  integrity sha512-Kapksse0VjitdCm3gS5aGoCnYb6tEyqOVQYdZg8Sx/eT+iNDZo5fv6+aeV0zALGLjRSZ8GMzTPTFVd5Cu78nEA==
+"@react-native-firebase/messaging@19.3.0":
+  version "19.3.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-19.3.0.tgz#fb75719e812e68b2936676c6e4aabfd598f52dc7"
+  integrity sha512-5nxX2jzRVMG/LwHQygQhl0X/j23FYY8Hn6T8xV3VnYk/O6PXbiQZVpbN5dM7F21aVf4wCFXJnn3jkHIbMP/MYw==
 
 "@react-native-picker/picker@^1.8.3":
   version "1.16.8"

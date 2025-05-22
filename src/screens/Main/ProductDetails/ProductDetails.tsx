@@ -64,7 +64,6 @@ import YoutubePlayer from 'react-native-youtube-iframe';
 import getYouTubeVideoId from '../../../helpers/getYoutubeId';
 import DeatailsSkeleton from './DeatailsSkeleton';
 import BottomSheet from '../MyOrder/BottomSheetOrderTrack';
-import {VELOCITY_EPS} from 'react-native-reanimated/lib/typescript/reanimated2/animation/decay/utils';
 import AnimatedLottieView from 'lottie-react-native';
 import Animations from '../../../assets/Animations';
 import Translation from '../../../assets/i18n/Translation';
@@ -72,6 +71,7 @@ import {Dropdown} from 'react-native-element-dropdown';
 import strings from '../../../assets/i18n/strings';
 import {AppEventsLogger} from 'react-native-fbsdk-next';
 import {ImageZoom} from '@likashefqet/react-native-image-zoom';
+import { useIsFocused } from '@react-navigation/native';
 
 const ProductDetails = ({route, navigation}: any) => {
   const tabRef = useRef<any>();
@@ -122,6 +122,9 @@ const ProductDetails = ({route, navigation}: any) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+  const {cart, createCart}: any = useCreateCart();
+   const isFocused = useIsFocused();
+    
   const data = [
     {label: 'Item 1', value: '1'},
     {label: 'Item 2', value: '2'},
@@ -576,6 +579,11 @@ const ProductDetails = ({route, navigation}: any) => {
       currency: 'QAR',
     });
   };
+
+  
+  
+
+  
 
   return (
     <BottomSheetModalProvider>

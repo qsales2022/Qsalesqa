@@ -13,9 +13,10 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		45ED992F1DE5B418C83C9413 /* libPods-Qsales-QsalesTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 266AA36BCBF9168728E261D2 /* libPods-Qsales-QsalesTests.a */; };
 		6132EF182BDFF13200BBE14D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6132EF172BDFF13200BBE14D /* PrivacyInfo.xcprivacy */; };
+		7A1038C12DAFDC940001F9A6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7A1038C02DAFDC940001F9A6 /* GoogleService-Info.plist */; };
+		7A1038C22DAFDC940001F9A6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7A1038C02DAFDC940001F9A6 /* GoogleService-Info.plist */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		9EBC8268C7F54F43B0236B0A /* libPods-Qsales.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD67E15CE86786AB4D9151B6 /* libPods-Qsales.a */; };
-		C57C887E2CD0C33A00BCB623 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C57C887D2CD0C33A00BCB623 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,11 +42,11 @@
 		266AA36BCBF9168728E261D2 /* libPods-Qsales-QsalesTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Qsales-QsalesTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C41101CB9BCDED0AEBDADFB /* Pods-Qsales.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Qsales.release.xcconfig"; path = "Target Support Files/Pods-Qsales/Pods-Qsales.release.xcconfig"; sourceTree = "<group>"; };
 		6132EF172BDFF13200BBE14D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Qsales/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		7A1038C02DAFDC940001F9A6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Qsales/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9976C96611ADEE0CFBE94A4F /* Pods-Qsales-QsalesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Qsales-QsalesTests.release.xcconfig"; path = "Target Support Files/Pods-Qsales-QsalesTests/Pods-Qsales-QsalesTests.release.xcconfig"; sourceTree = "<group>"; };
 		A4EF5FB2AEA7617975446427 /* Pods-Qsales.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Qsales.debug.xcconfig"; path = "Target Support Files/Pods-Qsales/Pods-Qsales.debug.xcconfig"; sourceTree = "<group>"; };
 		C569671E2CB53C0600EF81C0 /* QsalesDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = QsalesDebug.entitlements; path = Qsales/QsalesDebug.entitlements; sourceTree = "<group>"; };
-		C57C887D2CD0C33A00BCB623 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C5820D1D2CA57057005579A5 /* QsalesRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = QsalesRelease.entitlements; path = Qsales/QsalesRelease.entitlements; sourceTree = "<group>"; };
 		CD67E15CE86786AB4D9151B6 /* libPods-Qsales.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Qsales.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDF1034539CBFE503245DFC1 /* Pods-Qsales-QsalesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Qsales-QsalesTests.debug.xcconfig"; path = "Target Support Files/Pods-Qsales-QsalesTests/Pods-Qsales-QsalesTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -92,7 +93,7 @@
 		13B07FAE1A68108700A75B9A /* Qsales */ = {
 			isa = PBXGroup;
 			children = (
-				C57C887D2CD0C33A00BCB623 /* GoogleService-Info.plist */,
+				7A1038C02DAFDC940001F9A6 /* GoogleService-Info.plist */,
 				C569671E2CB53C0600EF81C0 /* QsalesDebug.entitlements */,
 				C5820D1D2CA57057005579A5 /* QsalesRelease.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -245,6 +246,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A1038C12DAFDC940001F9A6 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,7 +255,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6132EF182BDFF13200BBE14D /* PrivacyInfo.xcprivacy in Resources */,
-				C57C887E2CD0C33A00BCB623 /* GoogleService-Info.plist in Resources */,
+				7A1038C22DAFDC940001F9A6 /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
@@ -626,10 +628,7 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -708,10 +707,7 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

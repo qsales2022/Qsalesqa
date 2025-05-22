@@ -12,7 +12,6 @@ const useAddToCart = () => {
   const dispatch = useDispatch();
 
   const addToCart = async (variantId: any, cartId: any, quantity: any) => {
-    console.log(cartId, 'this variantId');
 
     dispatch(toggleLoader(true));
     try {
@@ -58,7 +57,7 @@ const useAddToCart = () => {
       if (data?.cartLinesAdd?.userErrors?.length) {
         console.error('User Errors:', data.cartLinesAdd.userErrors);
       }
-
+        
       setAddCartData(data?.cartLinesAdd?.cart);
       setLoading(false);
     } catch (error: any) {
