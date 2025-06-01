@@ -79,8 +79,8 @@ android {
         applicationId "com.qsales"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 48
-        versionName "4.4.0"
+        versionCode 51
+        versionName "4.3.9"
     }
     signingConfigs {
         release {

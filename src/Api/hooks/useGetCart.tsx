@@ -103,7 +103,10 @@ const useGetCart = () => {
         const {data} = response;
             
         // Check if data is valid before updating the state
+          console.log(data?.cart,'data?.cart?.lines');
+          
         if (data?.cart?.lines?.edges?.length) {
+          
           setcartDetails(data);
         } else {
           setcartDetails(null);

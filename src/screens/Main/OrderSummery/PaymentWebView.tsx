@@ -75,6 +75,7 @@ const PaymentWebView = ({route, navigation}: any) => {
   const handleWebViewMessage = async (message: any) => {
     if (JSON.parse(message)?.checkout_completed) {
       await setCheckoutCompleted(true);
+      await AsyncStorage.removeItem('checkoutId');
       createCart();
     }
   };

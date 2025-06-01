@@ -60,7 +60,7 @@ const useSearch = () => {
           }
         `,
         variables: {
-          searchText: `title:${searchText}`,
+          searchText: searchText
         },
       });
       const { data } = response;

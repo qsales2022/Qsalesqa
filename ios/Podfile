@@ -35,6 +35,18 @@ if linkage != nil
 end
 
 target 'Qsales' do
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'Firebase/Analytics', '10.24.0'
+
+
+  # Add Facebook SDK 
+  pod 'FBSDKCoreKit', '~> 18.0'
+  pod 'FBSDKLoginKit', '~> 18.0'
+  pod 'FBSDKShareKit', '~> 18.0'
+  pod 'FBSDKGamingServicesKit', '~> 18.0'
   
   config = use_native_modules!
 
@@ -48,6 +60,7 @@ target 'Qsales' do
     :flipper_configuration => flipper_config,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
+
   )
 
   target 'QsalesTests' do
@@ -62,5 +75,6 @@ target 'Qsales' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
+    
   end
 end
