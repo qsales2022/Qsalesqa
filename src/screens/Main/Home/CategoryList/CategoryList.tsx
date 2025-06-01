@@ -18,8 +18,7 @@ const CategoryList = ({data, data1}: any) => {
 
   return (
     <>
-    
-     
+  
       <View
         style={{
           paddingVertical: getHeight(60),
