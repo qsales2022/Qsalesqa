@@ -1,5 +1,5 @@
 const filterUniqueItem = (productArray: any, value: string) => {
-  console.log(productArray, 'COLOR_MAP_11');
+  // console.log(productArray[0]?.node?.selectedOptions, 'COLOR_MAP_11');
 
   const itemMap = new Map();
   if (productArray) {
@@ -8,7 +8,6 @@ const filterUniqueItem = (productArray: any, value: string) => {
       const colorOption = item.node.selectedOptions.find(
         (option: any) => option.name === value,
       );
-      console.log(colorOption, 'colorOption');
 
       if (colorOption) {
         const colorValue = colorOption.value;
@@ -21,12 +20,12 @@ const filterUniqueItem = (productArray: any, value: string) => {
     });
     // Filter the objects with the same color
     const resultArray: any = [];
-    console.log(itemMap, 'COLOR_MAP');
     itemMap.forEach(items => {
       if (items.length >= 1) {
         // If you want only arrays with more than one object with the same color
         // resultArray.push(...items);
         // If you want to include only the first item with the same color
+
         resultArray.push(items[0]);
       }
     });
@@ -38,7 +37,7 @@ const filterUniqueItem = (productArray: any, value: string) => {
 
     // }
 
-    
+     
     return resultArray;
   }
 };
