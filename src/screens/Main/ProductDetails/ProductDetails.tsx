@@ -1855,6 +1855,7 @@ const ProductDetails = ({route, navigation}: any) => {
                                     {variant?.node?.selectedOptions[0]?.name}
                                   </Text>
                                 )}
+                                
                                 {/* cheking === */}
                                 {variant?.node?.selectedOptions[0]?.value ===
                                 'Default Title' ? null : (
