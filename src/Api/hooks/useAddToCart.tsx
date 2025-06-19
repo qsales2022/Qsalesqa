@@ -73,7 +73,6 @@ const useAddToCart = () => {
     lineItems: {variantId: string; quantity: number}[] | any,
     ymqOptions: any,
   ) => {
-    // Ensure lineItems is an array
     console.log(lineItems, 'line items');
     //   const lines = [lineItems]
     //   console.log(lines[0],'lines is ff');

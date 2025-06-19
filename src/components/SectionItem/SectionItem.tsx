@@ -165,8 +165,6 @@
 //   },
 // });
 
-
-
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {FC, useEffect, useMemo, useState} from 'react';
 import {getHeight, getWidth} from '../../Theme/Constants';
@@ -268,7 +266,7 @@ const SectionItem: FC<ItemInterface> = ({
         ]}>
         <View style={styles.imageContainer}>
           {/* Changed condition to explicitly check for non-null discountPercentage */}
-          {offerPrice !== '' && (
+          {offerPrice !== '' && offerList.hasVisible && (
             <View
               style={[
                 styles.discountBadge,
@@ -320,7 +318,7 @@ const SectionItem: FC<ItemInterface> = ({
         <View style={styles.priceContainer}>
           <Text style={styles.priceTextQar}>QAR</Text>
           <Text style={styles.priceText}>{formattedPrice}</Text>
-          {offerPrice !== '' && (
+          {offerPrice !== '' && offerList.hasVisible && (
             <Text style={styles.offerPrice}>QAR {formattedOfferPrice}</Text>
           )}
         </View>
@@ -426,4 +424,3 @@ const styles = StyleSheet.create({
 });
 
 export default SectionItem;
-

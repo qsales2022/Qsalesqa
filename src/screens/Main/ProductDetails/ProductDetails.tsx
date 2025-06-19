@@ -72,6 +72,9 @@ import strings from '../../../assets/i18n/strings';
 import {AppEventsLogger} from 'react-native-fbsdk-next';
 import {ImageZoom} from '@likashefqet/react-native-image-zoom';
 import filterUniqueItem from '../../../helpers/filterUniqueItem';
+import {formToJSON} from 'axios';
+
+const BUNDLE_ITEM_COUNT = 20;
 
 const ProductDetails = ({route, navigation}: any) => {
   const tabRef = useRef<any>();
@@ -127,7 +130,10 @@ const ProductDetails = ({route, navigation}: any) => {
   const {relatedProducts, getRelatedProducts}: any = useGetRelatedProducts();
   const [isPlaying, setIsPlaying] = useState(true);
   const [value, setValue] = useState(null);
-  const [isFocus, setIsFocus] = useState(false);
+  const [bundleModal, setBundleModal] = useState(false);
+  const [bundleDeals, setBundleDeals] = useState<any>([]);
+  const [dealIndex, setDealIndex] = useState<any>(0);
+  const [arryIndex, setArryIndex] = useState<any>(0);
 
   let mode = 'test';
   const handleMessage = (event: WebViewMessageEvent) => {
@@ -200,13 +206,33 @@ const ProductDetails = ({route, navigation}: any) => {
           selected: true,
         });
       });
+
       setFreqItems(freqItems_);
     }
   }, [frequentlyBroughtItem, variant, productDetails]);
 
+  useEffect(() => {
+    const bundl_ = Array.from(
+      {
+        length: deals?.dealBars?.[arryIndex]?.quantity || 0,
+      },
+      () => ({
+        productId: getNoFromId(productDetails?.id),
+        id: getNoFromId(variantList[0]?.node?.id),
+        variants: {
+          id: getNoFromId(variantList[0]?.node?.id),
+          name: variantList?.[0]?.node?.title,
+        },
+        selected: false,
+      }),
+    );
+
+    setBundleDeals(bundl_);
+  }, [productDetails, deals, arryIndex]);
+
   const handleVariantCliclFreqItem = async (variant: any, index: any) => {
     let array = [...freqItems];
-    array[index].id = variant?.id;
+    array[index].id = getNoFromId(variant?.id);
     array[index].price = variant?.shop_currency_price;
     setFreqItems(array);
     setFreqItemVariantModalOpen(false);
@@ -216,9 +242,29 @@ const ProductDetails = ({route, navigation}: any) => {
     let array = [...freqItems];
     array[index].id = getNoFromId(variant?.node?.id);
     array[index].price = variant?.node?.price?.amount;
+
     setFreqItems(array);
     setVariant(variant);
     setFreqItemVariantModalOpen(false);
+  };
+
+  const handleVariantClicksBundle = (variant: any, index: number) => {
+    const updated = [...bundleDeals];
+    console.log(updated, 'updated');
+
+    updated[index] = {
+      ...updated[index],
+      id: getNoFromId(variant?.node?.id),
+      variants: {
+        id: getNoFromId(variant?.node?.id),
+        name: variant?.node?.title,
+      },
+      selected: true,
+    };
+
+    setBundleDeals(updated);
+    setVariant(variant);
+    setBundleModal(false);
   };
 
   useEffect(() => {
@@ -328,7 +374,7 @@ const ProductDetails = ({route, navigation}: any) => {
   }, [addCartData]);
   useEffect(() => {}, [productImages]);
   const getNoFromId = (inputString: string) => {
-    const numericPart = inputString.match(/\d+/);
+    const numericPart = inputString?.match(/\d+/);
     const result = numericPart ? numericPart[0] : '';
     return result;
   };
@@ -375,8 +421,25 @@ const ProductDetails = ({route, navigation}: any) => {
         merchandiseId: `gid://shopify/ProductVariant/${element.id}`, // Correct GID format
         quantity: 1, // Set quantity
       }));
+    console.log(lineItems, 'lineItems');
 
     // Call the function to add to cart
+    await addToCartFrequentlyBought(checkoutId, lineItems);
+  }
+  async function adddeals() {
+    // Get the selected deal bar
+    const selectedDeal = deals?.dealBars?.find((item: any) => item?.selected);
+    if (!selectedDeal) return;
+
+    // Create line items from bundle deals in Shopify GID format
+    const lineItems = bundleDeals
+      .filter((item: any) => item?.variants?.id) // Only include items with valid variant IDs
+      .map((item: any) => ({
+        merchandiseId: `gid://shopify/ProductVariant/${item.variants.id}`,
+        quantity: 1,
+      }));
+
+    // Add items to cart
     await addToCartFrequentlyBought(checkoutId, lineItems);
   }
 
@@ -389,7 +452,6 @@ const ProductDetails = ({route, navigation}: any) => {
 
     setAddOnList(list);
   };
-
   const addToCartWithAddOn = async () => {
     // Initialize lineItems as an array
     const lineItems: {merchandiseId: string; quantity: number}[] = [];
@@ -476,6 +538,12 @@ const ProductDetails = ({route, navigation}: any) => {
     await setFreqIndex(index);
     await setFreqItem(item);
     await setFreqItemVariantModalOpen(true);
+  };
+  const dealpicker = async (index: any) => {
+    console.log(index, 'done=====');
+
+    setDealIndex(index);
+    setBundleModal(true);
   };
   useEffect(() => {
     // console.log('YOUO', JSON.stringify(variantList));
@@ -598,7 +666,14 @@ const ProductDetails = ({route, navigation}: any) => {
     quantity: number,
   ): any => {
     // Call the action to add to cart
-    addToCart(id, checkoutId, quantity);
+    const isSelected = deals?.dealBars?.some(
+      (bar: any) => bar.quantity !== 1 && bar.selected,
+    );
+    if (isSelected && bundleDeals?.length > 0) {
+      adddeals();
+    } else {
+      addToCart(id, checkoutId, quantity);
+    }
     AppEventsLogger.logEvent('AddedToCart', {
       content_ids: id,
       content_type: 'product',
@@ -606,10 +681,9 @@ const ProductDetails = ({route, navigation}: any) => {
       currency: 'QAR',
     });
   };
-  // useEffect(()=>{
-  //  console.log(modelToShow,'this si the model to show');
-
-  // },[modelToShow])
+  useEffect(() => {
+    console.log('done', JSON.stringify(variant, null, 2), 'this is verint');
+  }, [deals, bundleDeals, variant]);
   return (
     <BottomSheetModalProvider>
       <View
@@ -1288,7 +1362,7 @@ const ProductDetails = ({route, navigation}: any) => {
                         />
                       </>
                     )}
-                    {variantList &&
+                  {variantList &&
                     variantList?.length > 1 &&
                     capacityToShow?.length >= 0 &&
                     productHasVariantSize(variantList, 'Capacity') && (
@@ -1379,7 +1453,7 @@ const ProductDetails = ({route, navigation}: any) => {
                         />
                       </>
                     )}
-                    {variantList &&
+                  {variantList &&
                     variantList?.length > 1 &&
                     styleToShow?.length >= 0 &&
                     productHasVariantSize(variantList, 'Style') && (
@@ -1482,21 +1556,22 @@ const ProductDetails = ({route, navigation}: any) => {
                     </Text>
                     {!Number.isNaN(
                       Number(variant?.node?.compareAtPrice?.amount),
-                    ) && (
-                      <Text
-                        style={{
-                          fontWeight: '600',
-                          paddingLeft: 99,
-                          fontSize: 14,
-                          color: 'black',
-                          textDecorationLine: 'line-through',
-                        }}>
-                        QAR{' '}
-                        {formatPrice(
-                          Number(variant?.node?.compareAtPrice?.amount),
-                        )}{' '}
-                      </Text>
-                    )}
+                    ) &&
+                      Number(variant?.node?.compareAtPrice?.amount) !== 0 && (
+                        <Text
+                          style={{
+                            fontWeight: '600',
+                            paddingLeft: 99,
+                            fontSize: 14,
+                            color: 'black',
+                            textDecorationLine: 'line-through',
+                          }}>
+                          QAR{' '}
+                          {formatPrice(
+                            Number(variant?.node?.compareAtPrice?.amount),
+                          )}{' '}
+                        </Text>
+                      )}
                   </Text>
 
                   <View style={styles.rowContainer}>
@@ -1661,14 +1736,19 @@ const ProductDetails = ({route, navigation}: any) => {
                           renderItem={({item, index}) => (
                             <TouchableOpacity
                               onPress={() => {
-                                const newArray = deals.dealBars.map(
+                                setArryIndex(index);
+                                const newArray = deals?.dealBars?.map(
                                   (item: any, i: any) => {
-                                    return {...item, selected: i === index}; // Toggle 'selected' for the selected item
+                                    return {...item, selected: i === index};
                                   },
                                 );
-
                                 setDeals({...deals, dealBars: newArray});
-                                setQuantity(item.quantity);
+
+                                if (item?.dealBarType == 'bxgy') {
+                                  setQuantity(2);
+                                } else {
+                                  setQuantity(item?.quantity);
+                                }
                               }}
                               style={{
                                 flexDirection: 'row',
@@ -1732,7 +1812,23 @@ const ProductDetails = ({route, navigation}: any) => {
                                       fontSize: 9,
                                       alignSelf: 'center',
                                     }}>
-                                    {item?.label && `(${item?.label})`}
+                                    {item?.dealBarType !== 'bxgy'
+                                      ? `You save QAR ${formatPrice(
+                                          Math.abs(
+                                            Number(item.discountValue) -
+                                              Number(
+                                                variant?.node?.price?.amount ||
+                                                  0,
+                                              ) *
+                                                (item?.quantity || 1),
+                                          ),
+                                        )}`
+                                      : `SAVE ${Math.round(
+                                          (item.getQuantity /
+                                            (item.buyQuantity +
+                                              item.getQuantity)) *
+                                            100,
+                                        )}%`}
                                   </Text>
                                 </View>
 
@@ -1741,8 +1837,100 @@ const ProductDetails = ({route, navigation}: any) => {
                                     fontWeight: '400',
                                     color: Colors.black,
                                   }}>
-                                  {item?.subtitle}
+                                  {/* {item?.subtitle} */}
+                                  {index === 0
+                                    ? `${item?.subtitle}`
+                                    : `You save QAR ${formatPrice(
+                                        Math.abs(
+                                          Number(item.discountValue) -
+                                            Number(
+                                              variant?.node?.price?.amount || 0,
+                                            ) *
+                                              (item?.quantity || 1),
+                                        ),
+                                      )}`}
                                 </Text>
+                                {index == 1 && item?.selected && (
+                                  <Text style={{fontSize: 12, color: 'red',marginTop:getHeight(70)}}>
+                                    {variant?.node?.selectedOptions[0]?.name}
+                                  </Text>
+                                )}
+                                {/* cheking === */}
+                                {variant?.node?.selectedOptions[0]?.value ===
+                                'Default Title' ? null : (
+                                  <>
+                                    {item?.selected &&
+                                      index !== 0 &&
+                                      Array.from(
+                                        {
+                                          length:
+                                            deals?.dealBars[index]?.quantity,
+                                        },
+                                        (_, quantityIndex) => (
+                                          <TouchableOpacity
+                                            onPress={() => {
+                                              dealpicker(quantityIndex);
+                                            }}
+                                            key={quantityIndex}
+                                            style={{
+                                              flexDirection: 'row',
+                                              maxWidth: '30%',
+                                              height: 30,
+                                              borderWidth: 0.5,
+                                              marginTop: 3,
+                                              alignItems: 'center',
+                                              borderColor: '#a01c64',
+                                              borderRadius: 4,
+                                              paddingHorizontal: 6,
+                                            }}>
+                                            <Text
+                                              style={{
+                                                fontSize: 12,
+                                                fontWeight: '600',
+                                                color: '#a01c64',
+                                                marginRight: 6,
+                                              }}>
+                                              {quantityIndex + 1}
+                                            </Text>
+
+                                            <View style={{flex: 1}}>
+                                              <Text
+                                                // key={idx}
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                                style={{
+                                                  color: 'black',
+                                                  fontSize: 12,
+                                                  fontWeight: '500',
+                                                }}>
+                                                {/* {bundleDeals?.variants
+                                                  ?.length &&
+                                                bundleDeals?.selected
+                                                  ? 'd'
+                                                  : variant?.node?.title} */}
+                                                {bundleDeals?.[quantityIndex]
+                                                  ?.variants?.name !== ''
+                                                  ? bundleDeals?.[quantityIndex]
+                                                      ?.variants?.name
+                                                  : variant?.node
+                                                      ?.selectedOptions[0]
+                                                      ?.value}
+                                              </Text>
+                                            </View>
+
+                                            <Text
+                                              style={{
+                                                color: 'black',
+                                                fontSize: 12,
+                                                paddingLeft: 6,
+                                              }}>
+                                              ▼
+                                            </Text>
+                                          </TouchableOpacity>
+                                        ),
+                                      )}
+                                  </>
+                                )}
                               </View>
                               <View style={{justifyContent: 'center'}}>
                                 {deals?.mostPopularDealBarId &&
@@ -2112,6 +2300,7 @@ const ProductDetails = ({route, navigation}: any) => {
                                               fontWeight: '500',
                                               alignSelf: 'center',
                                             }}>
+                                            {/* frq */}
                                             {
                                               item?.variants.filter(
                                                 (item: any) =>
@@ -2478,6 +2667,91 @@ const ProductDetails = ({route, navigation}: any) => {
             </View>
           </View>
         </Modal>
+
+        {/* //test bundle Modal */}
+
+        <Modal
+          visible={bundleModal}
+          transparent
+          onRequestClose={() => setBundleModal(false)}>
+          <View
+            style={{
+              backgroundColor: Colors.transparentBlack,
+              flex: 1,
+              justifyContent: 'center',
+            }}>
+            <View
+              style={{
+                backgroundColor: 'white',
+                justifyContent: 'center',
+                width: getWidth(1.5),
+                maxHeight: getHeight(1.5),
+                alignSelf: 'center',
+                borderRadius: 10,
+                paddingBottom: 16,
+              }}>
+              <TouchableOpacity
+                onPress={() => setBundleModal(false)}
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'flex-end',
+                  padding: 16,
+                }}>
+                <Image
+                  style={{
+                    height: getHeight(55),
+                    width: getHeight(55),
+                  }}
+                  source={icons.close}
+                />
+              </TouchableOpacity>
+
+              <FlatList
+                // ref={flatListRef0}
+                style={{marginTop: 6}}
+                data={variantList}
+                renderItem={({item}) => (
+                  <>
+                    {item && item?.node.quantityAvailable >= 2 && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          handleVariantClicksBundle(item, dealIndex);
+                        }}
+                        style={{
+                          borderColor: Colors.primary,
+                          backgroundColor:
+                            bundleDeals[dealIndex]?.id ==
+                            getNoFromId(item?.node?.id)
+                              ? Colors.accent
+                              : Colors.white,
+                          paddingLeft: 16,
+                          paddingRight: 16,
+                          paddingTop: 6,
+                          paddingBottom: 6,
+                          borderWidth: 0.5,
+                          width: getWidth(1.5),
+                          alignSelf: 'center',
+                        }}>
+                        {item?.node?.selectedOptions.map((item: any) => (
+                          <Text
+                            numberOfLines={1}
+                            style={{
+                              color: Colors.black,
+                              fontWeight: '500',
+                            }}>
+                            {item?.value}
+                          </Text>
+                        ))}
+                      </TouchableOpacity>
+                    )}
+                  </>
+                )}
+                keyExtractor={item => item.toString()}
+              />
+            </View>
+          </View>
+        </Modal>
+
         {/* <BottomSheet /> */}
 
         {/* <View style={styles.container}> */}
@@ -2578,7 +2852,6 @@ const ProductDetails = ({route, navigation}: any) => {
 };
 
 export default ProductDetails;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
